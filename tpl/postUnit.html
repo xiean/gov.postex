@@ -1,0 +1,39 @@
+<!-- INCLUDE header.html -->
+
+<!-- INCLUDE postInfo.html -->
+<script type="text/javascript" language="javascript">
+function filterUnit(str) {
+    $('#unitList').load("/ajax/postUnit_unitList/{{pathId}}/"+encodeURIComponent(str));
+}
+
+function quickFilter(obj) {
+    $('#inputFilter').val($(obj).text());
+}
+
+$(function() {
+    filterUnit('');
+});
+</script>
+
+<div id="contentWrap">
+    <!-- IF pathLock -->
+    <div class="mt20x taC fs20">
+        线路已<b style="color:#990000">锁定</b>，如想发文请先在<a href="/check/{{pathId}}"><b style="text-decoration:underline">核查</b></a>页面解锁线路！
+    </div>
+    <!-- ELSE -->
+    <div id="unitList" class="listC"></div>
+    <!--
+    <div class="mt20x taC">
+        <button class="btnA" onclick="$('#inputFilter').val('')">清除</button>
+        <input type="text" id="inputFilter" class="inputFilter w20p" onpropertychange="filterUnit(this.value)" oninput="filterUnit(this.value)" />
+        <button class="btnA" onclick="quickFilter(this)">市</button>
+        <button class="btnA" onclick="quickFilter(this)">局</button>
+        <button class="btnA" onclick="quickFilter(this)">会</button>
+        <button class="btnA" onclick="quickFilter(this)">集团</button>
+        <button class="btnA" onclick="quickFilter(this)">公司</button>
+    </div>
+    -->
+    <!-- ENDIF -->
+</div>
+
+<!-- INCLUDE footer.html -->

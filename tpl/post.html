@@ -1,0 +1,164 @@
+<!-- INCLUDE header.html -->
+
+<!-- INCLUDE postInfo.html -->
+<script type="text/javascript" language="javascript">
+var page = 1;
+var pn = "";
+var ci = "";
+var iv;
+function showPAD() {
+    clearInterval(iv);
+    $('#pnPAD').show();
+    pn = $('#postCode').text();
+}
+function hidePAD(act) {
+    //iv = setInterval("loadPostInfoSide()", 1000);
+    $('#pnPAD').hide();
+    ci = "";
+    if( act == 0 ) {
+        $('#postCode').text(pn);
+        return;
+    }
+    $('.posSum').text('');
+    loadPostInfoSide();
+    return;
+}
+function clickPAD(num) {
+    ci = ci+num;
+    $('#postCode').text(ci);
+}
+function loadPostInfoSide() {
+    if( $('#postCode').text() ) {
+        $('#piSide').load("/ajax/post_postList/{{unitId}}/"+$('#postCode').text());
+    }
+}
+function post(uid, insert) {
+    if( $('#postCode').text().length == 0 ) {
+        alert("您必须填写 '文号' 才能选择受文单位！");
+        return;
+    }
+    $.get("/ajax/post_do/{{unitId}}/"+uid+"/"+$('#postCode').text()+"/"+insert, function(data) {
+        if( data.length > 0 ) {
+            alert(data);
+            return;
+        } else {
+            loadPostInfoSide();
+            if( insert ) {
+                tmp = 1;
+                if( $('#bps'+uid).text().length > 0 ) {
+                    tmp = parseInt($('#bps'+uid).text())+1;
+                }
+            } else {
+                tmp = parseInt($('#bps'+uid).text())-1;
+                if( tmp < 1 ) {
+                    tmp = '';
+                }
+            }
+            $('#bps'+uid).text(tmp);
+        }
+    });
+}
+function postGroup(gid) {
+    if( $('#postCode').text().length == 0 ) {
+        alert("您必须填写 '文号' 才能选择受文单位！");
+        return;
+    }
+    $.get("/ajax/post_doGroup/{{unitId}}/"+gid+"/"+$('#postCode').text(), function(data) {
+        if( data.length > 0 ) {
+            alert(data);
+            return;
+        } else {
+            loadPostInfoSide();
+            unitPage(1);
+        }
+    });
+}
+
+function setPostSum(id, sum) {
+    if(sum) {
+        $('#bps'+id).text(sum);
+    } else {
+        $('#bps'+id).text('');
+    }
+}
+
+function filterUnit(str) {
+    if( $('#postCode').text().length == 0 ) {
+        $('#unitList').load("/ajax/post_unitList/{{unitId}}/0/"+encodeURIComponent(str));
+    } else {
+        $('#unitList').load("/ajax/post_unitList/{{unitId}}/"+$('#postCode').text()+"/"+encodeURIComponent(str));
+    }
+}
+
+function unitPage(p) {
+    page += p;
+    if( page < 1 ) {
+        page = 1;
+    }
+    $('#pageNum').text(page);
+    if( $('#postCode').text().length == 0 ) {
+        $('#unitList').load("/ajax/post_unitList/{{unitId}}/0/"+page);
+    } else {
+        $('#unitList').load("/ajax/post_unitList/{{unitId}}/"+$('#postCode').text()+"/"+page);
+    }
+}
+
+//iv = setInterval("loadPostInfoSide()", 1000);
+$(function() {
+    filterUnit('');
+    loadPostInfoSide();
+});
+</script>
+
+
+<div id="contentWrap">
+    <div class="pfLeft">
+        <fieldset onclick="showPAD()" class="cP">
+            <legend>当前发文号</legend>
+            <span id="postCode" class="posNum">{{code}}</span>
+        </fieldset>
+        <div id="pnPAD" style="display:none" class="inputPAD">
+            <table width="100%" cellpadding="0" cellspacing="5" border="0">
+                <tr>
+                    <td><button type="button" onclick="clickPAD(1)">1</button></td>
+                    <td><button type="button" onclick="clickPAD(2)">2</button></td>
+                    <td><button type="button" onclick="clickPAD(3)">3</button></td>
+                </tr>
+                <tr>
+                    <td><button type="button" onclick="clickPAD(4)">4</button></td>
+                    <td><button type="button" onclick="clickPAD(5)">5</button></td>
+                    <td><button type="button" onclick="clickPAD(6)">6</button></td>
+                </tr>
+                <tr>
+                    <td><button type="button" onclick="clickPAD(7)">7</button></td>
+                    <td><button type="button" onclick="clickPAD(8)">8</button></td>
+                    <td><button type="button" onclick="clickPAD(9)">9</button></td>
+                </tr>
+                <tr>
+                    <td><button type="button" onclick="hidePAD(1)"><span class="fs06">确定</span></button></td>
+                    <td><button type="button" onclick="clickPAD(0)">0</button></td>
+                    <td><button type="button" onclick="hidePAD(0)"><span class="fs06">取消</span></button></td>
+                </tr>
+            </table>
+        </div>
+        <div id="piSide"></div>
+    </div>
+    <div class="pfRight">
+        <div id="unitList" class="listB h400x ofH"></div>
+        <div class="mt20x">
+            <!--
+            <input type="text" id="inputFilter" class="inputFilter w40p" onpropertychange="filterUnit(this.value)" oninput="filterUnit(this.value)" />
+            &nbsp;
+            <!-- <a href="#" id="unitAdd" class="thickbox unitAdd" style="display:none" title="新增单位">新增单位</a> -->
+            <!-- IF pathId="6" -->
+            <!-- BEGIN groupList -->
+            <button type="button" class="h50x ml20x fs14" onclick="postGroup('{{id}}')">{{name}}</button>
+            <!-- END groupList -->
+            <!-- ENDIF -->
+            <button type="button" class="w20p h50x fR mr20x fs14" onclick="unitPage(1)">下页</button>
+            <button id="pageNum" type="button" class="h50x fR mr20x fs14" disabled>1</button>
+            <button type="button" class="w20p h50x fR mr20x fs14" onclick="unitPage(-1)">上页</button>
+        </div>
+    </div>
+</div>
+<!-- INCLUDE footer.html -->

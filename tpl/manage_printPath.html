@@ -1,0 +1,19 @@
+<div class="listA">
+    <h2 class="taC">{{printTitle}}</h2><br />
+    <div class="taC">
+    汇总日期<input id="statsDate" type="text" value="{{statsDate}}" class="fs12" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <!-- IF table="unit" -->
+    送达日期<input id="postDate" type="text" value="{{postDate}}" class="fs12" />
+    <!-- ELSE -->
+    <input id="postDate" type="hidden" />
+    <!-- ENDIF -->
+    </div>
+    <br />
+    <ol>
+        <!-- BEGIN localList -->
+        <li>
+            <button type="button" onclick="printView('{{parent.table}}',{{id}},'{{parent.direction}}')">{{name}}<br /><span class="fs08">({{alias}})</span></button>
+        </li>
+        <!-- END localList -->
+    </ol>
+</div>

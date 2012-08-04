@@ -1,0 +1,119 @@
+<!-- INCLUDE header.html -->
+
+<script type="text/javascript" language="javascript">
+var act;
+var cid;
+var printWin;
+function manageLoad(action) {
+    if ( action ) {
+        act = action;
+        $('#manage').load("/ajax/manage_"+act, function(r) {
+            $('#itemModify').load("/ajax/manage_"+act+"_modify/");
+        });
+    }
+}
+function itemMove(src, dst) {
+    $.get("/ajax/manage_"+act+"_move/"+src+"/"+dst, function(r) {
+        manageLoad(act);
+    });
+}
+function itemMod(id) {
+    $('#itemModify').load("/ajax/manage_"+act+"_modify/"+id);
+}
+function formSubmit(fs) {
+    $.post("/ajax/manage_"+act+"_do/"+fs, $('#mform').serialize(), function(r) {
+        manageLoad(act);
+    });
+}
+function manageSeqLoad(id) {
+    cid = id;
+    $('#itemModify').load("/ajax/manage_"+act+"_list/"+id);
+}
+function seqMove(src, dst) {
+    $.get("/ajax/manage_"+act+"_move/"+src+"/"+dst, function(r) {
+        manageSeqLoad(cid);
+    });
+}
+function printView(table, id, direction) {
+    if( printWin ) {
+        printWin.close();
+    }
+    printWin = window.open('/tpl/loading.html','Print');
+    $.get("/ajax/manage_printView/"+table+"/"+id+"/"+direction+"/"+$('#statsDate').val()+"/"+$('#postDate').val(), function(r) {
+        printWin.document.write(r);
+        printWin.document.all.WebBrowser.ExecWB(7,1);
+        //printWin.document.all.WebBrowser.ExecWB(45,1);
+        printWin.close();
+    });
+}
+
+function unitGroup(obj) {
+    var ug = obj.checked ? 1 : 0;
+    $.get("/ajax/manage_unitGroup_chg/"+cid+"/"+$(obj).val()+"/"+ug, function(r) {
+        manageSeqLoad(cid);
+    });
+}
+
+function listCheck(obj, name) {
+    var ug = obj.checked ? 1 : 0;
+    $.get("/ajax/manage_unitGroup_chg/"+cid+"/0/"+ug, function(r) {
+        manageSeqLoad(cid);
+    });
+    //if( obj.checked ) {
+    //    checkAll(name);
+    //} else {
+    //    clearAll(name);
+    //}
+}
+
+function checkAll(name)
+{
+    var el = document.getElementsByTagName('input');
+    var len = el.length;
+    for(var i=0; i<len; i++)
+    {
+        if((el[i].type=="checkbox") && (el[i].name==name))
+        {
+            el[i].checked = true;
+        }
+    }
+}
+function clearAll(name)
+{
+    var el = document.getElementsByTagName('input');
+    var len = el.length;
+    for(var i=0; i<len; i++)
+    {
+        if((el[i].type=="checkbox") && (el[i].name==name))
+        {
+            el[i].checked = false;
+        }
+    }
+}
+</script>
+
+<div id="contentWrap">
+    <table width="100%" cellspacing="0" cellpadding="5" border="0" class="mt20x">
+        <tr>
+            <td width="20%" height="400" class="br1S taR vaT listE">
+            <ol>
+                <li><span>&nbsp;单据打印</span></li>
+                <li><a href="#" onclick="manageLoad('printFrom')">发文单打印</a></li>
+                <li><a href="#" onclick="manageLoad('printTo')">受文单打印</a></li>
+                <li><a href="#" onclick="manageLoad('printUnit')">签收单打印</a></li>
+                <li><a href="#" onclick="manageLoad('printStats')">汇总单打印</a></li>
+                <li><span>&nbsp;线路管理</span></li>
+                <li><a href="#" onclick="manageLoad('pathList')">线路列表</a></li>
+                <li><a href="#" onclick="manageLoad('pathSeq')">发文单位顺序</a></li>
+                <li><span>&nbsp;单位管理</span></li>
+                <li><a href="#" onclick="manageLoad('unitList')">单位列表</a></li>
+                <li><a href="#" onclick="manageLoad('unitGroup')">受文单位编组</a></li>
+                <!-- <li><span>&nbsp;公文查询</span></li> -->
+            </ol>
+            </td>
+            <td width="80%" class="vaT"><div id="manage" class="ml20x"></div></td>
+        </tr>
+    </table>
+</div>
+
+<!-- INCLUDE footer.html -->

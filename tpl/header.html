@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="utf-8" lang="utf-8">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title><!-- IF title -->{{title}} -<!-- ENDIF -->{{global_title}}</title>
+<link rel="stylesheet" type="text/css" href="/css/common.css" />
+<link rel="stylesheet" type="text/css" href="/css/thickbox.css" />
+<!-- BEGIN cssList -->
+<link rel="stylesheet" type="text/css" href="/css/{{uri}}" />
+<!-- END cssList -->
+<script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="/js/jquery.scrollTo-min.js"></script>
+
+<!-- BEGIN jsList -->
+<script type="text/javascript" src="/js/{{uri}}"></script>
+<!-- END jsList -->
+</head>
+<body class="m0 p0">
+<div id="headerWrap">
+    <div class="topBanner">
+        <div class="taC fs20 dTC vaM">
+            武汉市公文交换站电子公文交换系统
+        </div>
+    </div>
+    <!-- IF navLeft -->
+    <div class="nav">
+        <ol class="fL">
+            <!-- BEGIN navLeft -->
+            <li onclick="<!-- IF jsfunc -->{{jsfunc}}<!-- ELSE -->location.href='{{uri}}'<!-- ENDIF -->" <!-- IF class -->class="{{class}}"<!-- ENDIF --> >
+                {{text}}
+            </li>
+            <!-- END navLeft -->
+        </ol>
+        <ol class="fR">
+            <!-- BEGIN navRight -->
+            <li <!-- IF id -->id="{{id}}"<!-- ENDIF --> onclick="<!-- IF jsfunc -->{{jsfunc}}<!-- ELSE -->location.href='{{uri}}'<!-- ENDIF -->" <!-- IF class -->class="{{class}}"<!-- ENDIF --> >
+                {{text}}
+            </li>
+            <!-- END navRight -->
+        </ol>
+        <div class="clear"></div>
+    </div>
+    <!-- ENDIF -->
+</div>

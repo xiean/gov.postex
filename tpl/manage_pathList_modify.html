@@ -1,0 +1,25 @@
+<form id="mform" name="mform">
+<input name="id" type="hidden" value="<!-- IF id -->{{id}}<!-- ENDIF -->" />
+<table width="100%" cellspacing="5" cellpadding="5" border="0">
+    <tr>
+        <td width="40%" align="right">线路名</td>
+        <td width="60%"><input name="name" type="text" class="w40p fs12" value="<!-- IF name -->{{name}}<!-- ENDIF -->" /></td>
+    </tr>
+    <tr>
+        <td align="right">线路别名</td>
+        <td><input name="alias" type="text" class="w40p fs12" value="<!-- IF alias -->{{alias}}<!-- ENDIF -->" /></td>
+    </tr>
+    <tr>
+        <td colspan="2" align="center">
+            <!-- IF id -->
+            <button type="button" onclick="formSubmit(2)">修改</button>
+            &nbsp;
+            <button type="button" onclick="formSubmit(3)">删除</button>
+            <!-- ELSE -->
+            <button type="button" onclick="formSubmit(1)">新增</button>
+            <!-- ENDIF -->
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </td>
+    </tr>
+</table>
+</form>

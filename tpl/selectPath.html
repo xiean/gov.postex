@@ -1,0 +1,23 @@
+<!-- INCLUDE header.html -->
+
+<div id="contentWrap">
+    <div class="listA">
+        <ol>
+            <!-- BEGIN localList -->
+            <li>
+                <button type="button" onclick="location.href='/{{parent.action}}/{{id}}'">{{name}}<br /><span class="fs08">({{alias}})</span></button>
+            </li>
+            <!-- END localList -->
+        </ol>
+        <div class="h20x"></div>
+        <ol>
+            <!-- BEGIN regionList -->
+            <li>
+                <button type="button" onclick="location.href='/{{parent.action}}/{{id}}'">{{name}}</button>
+            </li>
+            <!-- END regionList -->
+        </ol>
+    </div>
+</div>
+
+<!-- INCLUDE footer.html -->

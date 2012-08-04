@@ -1,0 +1,26 @@
+<table width="100%" cellspacing="0" cellpadding="2" border="0">
+    <tr class="tabTitle">
+        <td width="38%">&nbsp;发文单位 &nbsp; {{today}}</td>
+        <td width="12%" class="taC">文号</td>
+        <td width="8%" class="taC">件数</td>
+        <td width="42%">受文单位</td>
+    </tr>
+</table>
+<div id="postInfoList" class="h400x ofyS">
+    <table width="100%" cellspacing="0" cellpadding="5" border="0">
+        <!-- BEGIN postList -->
+        <!-- IF count -->
+        <tr class="tabData2">
+        <!-- ELSE -->
+        <tr class="tabData0 cP" onclick="location.href='/post/{{fuid}}/{{code}}'">
+        <!-- ENDIF -->
+            <td height="40" width="40%">&nbsp; {{funame}}</td>
+            <td width="12%" class="taC">{{code}}</td>
+            <td width="8%" class="taC">{{sum}}</td>
+            <td width="40%">{{tuname}}</td>
+        </tr>
+        <!-- END postList -->
+    </table>
+</div>
+<button type="button" class="w48p h50x fL fs14" onclick="scrollTo('postInfoList','','-=360px')">上翻</button>
+<button type="button" class="w48p h50x fR fs14" onclick="scrollTo('postInfoList','','+=360px')">下翻</button>

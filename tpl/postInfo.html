@@ -1,0 +1,37 @@
+<script type="text/javascript" language="javascript">
+function loadPostSum() {
+    <!-- IF unitId -->
+    $('#postSum').load("/ajax/postInfo_sum/from/unit/{{unitId}}");
+    <!-- ELSE -->
+    $('#postSum').load("/ajax/postInfo_sum/from/path/{{pathId}}");
+    <!-- ENDIF -->
+}
+function showPostInfo() {
+    $('#postInfo').empty();
+    o = $('#postTitle').offset();
+    $('#postInfo').css({left:o.left-610,top:o.top+15});
+    <!-- IF unitId -->
+    $('#postInfo').load("/ajax/postInfo_postList/unit/{{unitId}}");
+    <!-- ELSE -->
+    $('#postInfo').load("/ajax/postInfo_postList/path/{{pathId}}");
+    <!-- ENDIF -->
+    $('#postInfo').fadeIn().animate({top:o.top},{queue:false});
+}
+function hidePostInfo() {
+    o = $('#postTitle').offset();
+    $('#postInfo').fadeOut().animate({top:o.top+15},{queue:false});
+}
+function togglePostInfo() {
+    if( $('#postInfo').css("display") == "none" ) {
+        showPostInfo();
+    } else {
+        hidePostInfo();
+    }
+}
+function scrollTo(id, ox, oy) {
+    $('#'+id).stop().scrollTo({top:oy,left:ox}, 500)
+}
+setInterval("loadPostSum()", 1000);
+</script>
+
+<div id="postInfo" class="postInfo" style="display:none"></div>

@@ -1,0 +1,52 @@
+<html>
+<head>    
+<title>发文单打印预览</title>
+<style type="text/css">
+    body {margin:0}
+    body,td {font-size:15px}
+    td {border:1px #000000 solid}
+</style>
+</head> 
+
+<body>
+<!-- BEGIN list -->
+<!-- IF ROWCNT!="0" -->
+<br style="line-height:0;page-break-after:always;mso-break-type:section-break" />
+<!-- ENDIF -->
+<table width="370" cellspacing="0" cellpadding="0">
+    <tr>
+        <td colspan="3" style="height:45px;font-size:2em;border:0;text-align:center;vertical-align:bottom">
+            线路发文清单
+        </td>
+    </tr>
+    <tr>
+        <td style="border:0">打印时间：{{parent.printTime}}</td>
+        <td colspan="2" style="border:0;text-align:right">页数：{{cPage}}/{{parent.sPage}}</td>
+    </tr>
+    <tr>
+        <td style="border-bottom:0;border-right:0;" width="64%" height="24">&nbsp; {{parent.name}} - {{parent.alias}}</td>
+        <td style="border-bottom:0;border-left:0;border-right:0;" width="18%" align="right">通信员：</td>
+        <td style="border-bottom:0;border-left:0;" width="18%">{{parent.manager}}&nbsp;</td>
+    </tr>
+    <tr>
+        <td style="border-top:0;border-right:0;" height="20">&nbsp; 日期：{{parent.printDate}}</td>
+        <td style="border-top:0;border-left:0;border-right:0;" align="right">总件数：</td>
+        <td style="border-top:0;border-left:0;">{{parent.postSum}}</td>
+    </tr>
+    <tr>
+        <td style="border-top:0;vertical-align:bottom" height="20">&nbsp;发文单位</td>
+        <td style="border-top:0;border-left:0;vertical-align:bottom" align="center">文号</td>
+        <td style="border-top:0;border-left:0;vertical-align:bottom" align="center">件数</td>
+    </tr>
+    <!-- BEGIN upList -->
+    <tr>
+        <td style="border-top:0;vertical-align:bottom" height="20">&nbsp; {{funame}}</td>
+        <td style="border-top:0;border-left:0;" align="center">{{code}}</td>
+        <td style="border-top:0;border-left:0;" align="center">{{sum}}</td>
+    </tr>
+    <!-- END upList -->
+</table>
+<!-- END list -->
+<object id="WebBrowser" width="0" height="0" classid="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></object>
+</body>
+</html>

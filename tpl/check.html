@@ -1,0 +1,72 @@
+<!-- INCLUDE header.html -->
+
+<script type="text/javascript" language="javascript">
+function scrollTo(id, ox, oy) {
+    $('#'+id).stop().scrollTo({top:oy,left:ox}, 500)
+}
+</script>
+
+<div id="contentWrap">
+    <table width="100%" cellspacing="30" cellpadding="2" border="0">
+        <tr>
+            <td width="50%" class="taC">
+                <table width="100%" cellspacing="0" cellpadding="2" border="0">
+                    <tr class="tabTitle">
+                        <td width="38%">&nbsp; 今日总发文 <span style='text-decoration:underline;font-size:1.2em'>{{leftSum}}</span> 件</td>
+                        <td width="12%" class="taC">文号</td>
+                        <td width="8%" class="taC">件数</td>
+                        <td width="42%">受文单位</td>
+                    </tr>
+                </table>
+                <div id="leftPostList" class="h400x ofyS">
+                    <table width="100%" cellspacing="0" cellpadding="5" border="0">
+                        <!-- BEGIN leftPostList -->
+                        <!-- IF count -->
+                        <tr class="tabData2">
+                        <!-- ELSE -->
+                        <tr class="tabData0 cP">
+                        <!-- ENDIF -->
+                            <td height="40" width="40%">&nbsp; {{funame}}</td>
+                            <td width="12%" class="taC">{{code}}</td>
+                            <td width="8%" class="taC">{{sum}}</td>
+                            <td width="40%">{{tuname}}</td>
+                        </tr>
+                        <!-- END leftPostList -->
+                    </table>
+                </div>
+                <button type="button" class="w48p h50x fL fs14" onclick="scrollTo('leftPostList','','-=360px')">上翻</button>
+                <button type="button" class="w48p h50x fR fs14" onclick="scrollTo('leftPostList','','+=360px')">下翻</button>
+            </td>
+            <td width="50%" class="taC">
+                <table width="100%" cellspacing="0" cellpadding="2" border="0">
+                    <tr class="tabTitle">
+                        <td width="38%">&nbsp; 今日总受文 <span style='text-decoration:underline;font-size:1.2em'>{{rightSum}}</span> 件</td>
+                        <td width="12%" class="taC">文号</td>
+                        <td width="8%" class="taC">件数</td>
+                        <td width="42%">发文单位</td>
+                    </tr>
+                </table>
+                <div id="rightPostList" class="h400x ofyS">
+                    <table width="100%" cellspacing="0" cellpadding="5" border="0">
+                        <!-- BEGIN rightPostList -->
+                        <!-- IF count -->
+                        <tr class="tabData2">
+                        <!-- ELSE -->
+                        <tr class="tabData0 cP">
+                        <!-- ENDIF -->
+                            <td height="40" width="40%">&nbsp; {{tuname}}</td>
+                            <td width="12%" class="taC">{{code}}</td>
+                            <td width="8%" class="taC">{{sum}}</td>
+                            <td width="40%">{{funame}}</td>
+                        </tr>
+                        <!-- END rightPostList -->
+                    </table>
+                </div>
+                <button type="button" class="w48p h50x fL fs14" onclick="scrollTo('rightPostList','','-=360px')">上翻</button>
+                <button type="button" class="w48p h50x fR fs14" onclick="scrollTo('rightPostList','','+=360px')">下翻</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- INCLUDE footer.html -->

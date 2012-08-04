@@ -1,0 +1,396 @@
+@charset "utf-8";
+
+body {
+    font-family: "微软雅黑","黑体";
+}
+
+button {
+    padding: 0px 5px 0px 5px;
+    font-family: "微软雅黑","黑体";
+    overflow: hidden;
+    cursor: pointer;
+}
+.btn1 {
+    background: #ffcc99;
+    border: 2px #990000 solid;
+    border-left: 10px #990000 solid;
+    margin: 0 3px 0 3px;
+}
+.btn2 {
+    background: #ffcc99;
+    border: 2px #990000 solid;
+    border-right: 10px #990000 solid;
+    margin: 0 3px 0 3px;
+}
+.btn3 {
+    background: #ffcc99;
+    border: 2px #990000 dotted;
+}
+.btn4 {
+    background: #ffcc99;
+    border: 2px #990000 solid;
+}
+.btn5 {
+    background: #dde7ff;
+    border: 2px #0033ff solid;
+    border-left: 10px #0033ff solid;
+    border-right: 10px #0033ff solid;
+    margin: 0 5px 0 5px;
+}
+.btn6 {
+    background: #ddffe7;
+    border: 2px #009900 solid;
+    border-left: 10px #009900 solid;
+    border-right: 10px #009900 solid;
+    margin: 0 5px 0 5px;
+}
+.btn7 {
+    background: #ffe7bb;
+    border: 2px #dd8866 solid;
+    border-left: 10px #dd8866 solid;
+    border-right: 10px #dd8866 solid;
+    margin: 0 5px 0 5px;
+}
+
+.btnIndex {
+    font-size: 2em;
+    width: 150px;
+    height: 200px;
+}
+
+.btnA {
+    font-size: 2em;
+}
+.btnB {
+    height: 60px;
+    padding: 0 15px 0 15px;
+    font-size: 1.2em;
+}
+
+
+.topBanner {
+    width: 100%;
+    height: 80px;
+    color: #ffffff;
+    background: #990000;
+    display: table;
+}
+
+.nav {
+    height: 40px;
+    background: #ffe7bb;
+    padding: 2px;
+    border-bottom: 1px #dd8866 solid;
+}
+    .nav ol {
+        margin: 0;
+        padding: 0;
+    }
+        .nav ol li {
+            height: 37px;
+            line-height: 36px;
+            display: inline-block;
+            font-size: 1.2em;
+            font-weight: bold;
+            padding: 0 10px 0 10px;
+            cursor: pointer;
+        }
+
+.listA {
+    width: 90%;
+    margin: auto;
+    margin-top: 20px;
+}
+    .listA ol {
+        margin: 0;
+        padding: 0 0 0 5%;
+    }
+        .listA ol li {
+            width: 19%;
+            height: 80px;
+            display: inline-table;
+            vertical-align: bottom;
+        }
+            .listA ol li button {
+                width: 80%;
+                height: 70px;
+                font-size: 1.2em;
+                font-weight: bold;
+            }
+
+.listB {
+    width: 100%;
+    margin: auto;
+    margin-top: 20px;
+}
+    .listB ol {
+        margin: 0;
+        padding: 0 0 0 3%;
+    }
+        .listB ol li {
+            width: 9%;
+            height: 80px;
+            display: inline-table;
+            vertical-align: bottom;
+        }
+            .listB ol li button {
+                width: 90%;
+                height: 70px;
+                font-size: 1em;
+                font-weight: bold;
+            }
+
+.listC {
+    width: 100%;
+    margin: auto;
+    margin-top: 20px;
+}
+    .listC ol {
+        margin: 0;
+        padding: 0 0 0 5%;
+    }
+        .listC ol li {
+            width: 12%;
+            height: 80px;
+            display: inline-table;
+            vertical-align: bottom;
+        }
+            .listC ol li button {
+                width: 80%;
+                height: 70px;
+                font-size: 1.2em;
+                font-weight: bold;
+            }
+
+.listD {
+    width: 90%;
+    margin: auto;
+    margin-top: 20px;
+}
+    .listD ol {
+        margin: 0;
+        padding: 0 0 0 5%;
+    }
+        .listD ol li {
+            width: 19%;
+            height: 80px;
+            display: inline-table;
+            vertical-align: bottom;
+        }
+            .listD ol li button {
+                width: 80%;
+                height: 70px;
+                font-size: 1.2em;
+                font-weight: bold;
+            }
+
+.listE {
+    margin-top: 20px;
+}
+    .listE ol {
+        float: right;
+        margin: 0;
+        padding: 0;
+    }
+        .listE ol li {
+            width: 120px;
+            height: 20px;
+            padding: 5px;
+            text-align: left;
+            list-style: none;
+
+
+        }
+            .listE ol li a {
+                float: right;
+            }
+            .listE ol li span {
+                width: 100%;
+                display: block;
+                font-weight: bold;
+                vertical-align: bottom;
+                background: #ffe7bb;
+            }
+
+.posNum {
+    color: #0000DD;
+    font-size: 4.5em;
+    line-height: 0.8em;
+}
+.posSum {
+    position: absolute;
+    color: #FF0000;
+    font-size: 2em;
+    font-weight: bold;
+    padding-left: 5px;
+    z-index: 10;
+}
+
+.postInfo {
+    width: 600px;
+    font-weight: 0.6em;
+    background: #fff;
+    border: 2px #0033ff solid;
+    padding: 4px;
+    position: absolute;
+    z-index: 10000;
+}
+
+.tabTitle td {
+    color: #ffffff;
+    font-weight: bold;
+    background: #0033aa;
+}
+.tabData0 td {
+    border-bottom: 1px #0033aa dotted;
+    background: #FFFFFF;
+}
+.tabData1 td {
+    border-bottom: 1px #0033aa dotted;
+    background: #E0EEFF;
+}
+.tabData2 td {
+    font-weight: bold;
+    background: #ffcc00;
+}
+
+.pfLeft {
+    width: 220px;
+    height: 400px;
+    margin-left: 40px;
+    float: left;
+}
+.pfLeft fieldset {
+    height: 80px;
+    margin: 0;
+    padding: 5px;
+    text-align: center;
+    border: 3px #0033aa double;
+}
+.pfLeft fieldset legend {
+    margin-left: 10px;
+}
+.pfRight {
+    margin-left: 270px;
+}
+
+.inputPAD {
+    background: #D0D0D0;
+    border: 1px solid;
+    padding: 5px;
+    position: absolute;
+    z-index: 1000;
+}
+.inputPAD button {
+    width: 88px;
+    height: 78px;
+    font-size: 3em;
+}
+
+.inputFilter {
+    font-size: 2em;
+    border: 1px #0033aa solid;
+    padding: 5px;
+}
+
+.tdBLR {
+    background: #ffe7bb;
+    border-left: 1px #dd8866 solid;
+    border-right: 1px #dd8866 solid;
+}
+
+/*
+ * 预定义模板
+ */
+.clear  {height:0;line-height:0;font-size:0;clear:both;}
+.clearL {height:0;line-height:0;font-size:0;clear:left;}
+.clearH {clear:both}
+
+.cP     {cursor:pointer}
+
+.dB     {display:block}
+.dT     {display:table}
+.dTC    {display:table-cell}
+.dL     {display:inline}
+
+.ofH    {overflow:hidden}
+.ofyA   {overflow-y:auto}
+.ofyS   {overflow-y:scroll}
+.ofyV   {overflow-y:visible}
+
+/* 文本属性 */
+.fs06   {font-size:0.6em}
+.fs08   {font-size:0.8em}
+.fs12   {font-size:1.2em}
+.fs14   {font-size:1.4em}
+.fs16   {font-size:1.6em}
+.fs20   {font-size:2em}
+.fs30   {font-size:3em}
+.fs40   {font-size:4em}
+.fs45   {font-size:4.5em}
+.fs50   {font-size:5em}
+.fwB    {font-weight:bold}
+
+.lh0    {line-height:0}
+.lh08   {line-height:0.8em}
+
+/* 定位 */
+.taC    {text-align:center}
+.taR    {text-align:right}
+.vaT    {vertical-align:top}
+.vaM    {vertical-align:middle}
+.vaB    {vertical-align:bottom}
+.fL     {float:left}
+.fR     {float:right}
+.pABS   {position:absolute}
+.pREL   {position:relative}
+.pFIX   {position:fixed}
+
+/* 边距 */
+.p0     {padding:0}
+.pl5x   {padding-left:5px;}
+.pr5x   {padding-right:5px;}
+
+/* 间距 */
+.m0     {margin:0}
+.ma     {margin:auto}
+.m20x   {margin:20px}
+.mt20x  {margin-top:20px}
+.ml20x  {margin-left:20px}
+.mr20x  {margin-right:20px}
+.mr400x {margin-right:400px}
+
+/* 宽度 */
+.w360x  {width:360px}
+.w20p   {width:20%}
+.w28p   {width:28%}
+.w35p   {width:35%}
+.w40p   {width:40%}
+.w48p   {width:48%}
+.w55p   {width:55%}
+.w58p   {width:58%}
+.w60p   {width:60%}
+.w70p   {width:70%}
+.w80p   {width:80%}
+.w90p   {width:90%}
+.w100p  {width:100%}
+
+/* 高度 */
+.h100p  {height:100%}
+.h10x   {height:10px}
+.h20x   {height:20px}
+.h40x   {height:40px}
+.h50x   {height:50px}
+.h60x   {height:60px}
+.h80x   {height:80px}
+.h100x  {height:100px}
+.h300x  {height:300px}
+.h350x  {height:350px}
+.h400x  {height:400px}
+
+/* 边框 */
+.b1S    {border:1px solid}
+.b2S    {border:2px solid}
+.br1S   {border-right:1px #dd8866 solid}
+
+

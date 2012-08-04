@@ -1,0 +1,64 @@
+<html>
+<head>    
+<title>汇总表打印预览</title>
+<style type="text/css">
+    body {margin:0}
+    body,td {font-size:15px}
+    td {border:1px #000000 solid}
+</style>
+</head> 
+
+<body>
+<table width="370" cellspacing="0" cellpadding="0">
+    <tr>
+        <td colspan="3" style="height:45px;font-size:2em;border:0;text-align:center;vertical-align:bottom">
+            汇 总 表
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" style="border:0">打印时间：{{parent.printTime}}</td>
+    </tr>
+    <tr>
+        <td colspan="3" style="border:0">汇总日期：{{parent.date}}</td>
+    </tr>
+    <tr>
+        <td colspan="3" style="border:0">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style="vertical-align:bottom" width="82%" height="20" colspan="2">&nbsp;发文线路</td>
+        <td style="border-left:0;vertical-align:bottom" width="18%" align="center">件数</td>
+    </tr>
+    <!-- BEGIN fromList -->
+    <tr>
+        <td style="border-top:0;vertical-align:bottom" height="20" colspan="2">&nbsp;{{name}} （{{alias}}）</td>
+        <td style="border-top:0;border-left:0;" align="center">{{sum}}</td>
+    </tr>
+    <!-- END fromList -->
+    <tr>
+        <td style="border-top:0;vertical-align:bottom" height="20" colspan="2">&nbsp;合计</td>
+        <td style="border-top:0;border-left:0;" align="center">{{fromSum}}</td>
+    </tr>
+    <tr>
+        <td colspan="3" style="border:0">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style="vertical-align:bottom" width="60%" height="20">&nbsp;受文线路</td>
+        <td style="border-left:0;vertical-align:bottom" width="20%" align="center">交换清单</td>
+        <td style="border-left:0;vertical-align:bottom" width="18%" align="center">件数</td>
+    </tr>
+    <!-- BEGIN toList -->
+    <tr>
+        <td style="border-top:0;vertical-align:bottom" height="20">&nbsp;{{name}} （{{alias}}）</td>
+        <td style="border-top:0;border-left:0;" align="center">{{pSum}}</td>
+        <td style="border-top:0;border-left:0;" align="center">{{sum}}</td>
+    </tr>
+    <!-- END toList -->
+    <tr>
+        <td style="border-top:0;vertical-align:bottom" height="20">&nbsp;合计</td>
+        <td style="border-top:0;border-left:0;" align="center">{{topSum}}</td>
+        <td style="border-top:0;border-left:0;" align="center">{{toSum}}</td>
+    </tr>
+</table>
+<object id="WebBrowser" width="0" height="0" classid="CLSID:8856F961-340A-11D0-A96B-00C04FD705A2"></object>
+</body>
+</html>
