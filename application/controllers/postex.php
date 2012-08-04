@@ -43,6 +43,22 @@ class postex extends CI_Controller {
         // 初始化视图模型
         $this->load->model('db_model', 'postInfo');
         $this->postInfo->init('postInfo', 'date');
+
+        // 初始化Session
+        $this->load->library('session');
+
+        // 检查是否登录
+        if( $this->session->userdata('user') === FALSE ) {
+            $seg = $this->uri->segment_array();
+            if( $seg[2] != "noLogin" ) {
+                return redirect('/noLogin');
+            }
+        }
+    }
+
+    // 未登录
+    public function noLogin() {
+        $this->tpl->output("noLogin.html");
     }
 
     // 首页

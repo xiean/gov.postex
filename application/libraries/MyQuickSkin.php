@@ -7,14 +7,14 @@ class MyQuickSkin {
     public $gValue = array();
     public $debug = FALSE;
     public $template_dir = "tpl/";
-    public $cache_dir = "tmp/";
+    public $cache_dir = "cache/";
     public $css_dir = "css/";
     public $img_dir = "images/";
     public $js_dir = "js/";
-    
+
     public function __construct() {
         $this->tpl = new QuickSkin();
-        
+
         if( $this->debug ) {
             $this->tpl->reuse_code = true;
             $this->tpl->cache_lifetime = 0;
@@ -22,7 +22,7 @@ class MyQuickSkin {
             $this->tpl->reuse_code = false;
             $this->tpl->cache_lifetime = 600;
         }
-        
+
         $baseDir = $_SERVER['DOCUMENT_ROOT'] .'/';
         $this->tpl->template_dir = $baseDir . $this->template_dir;
         $this->tpl->temp_dir = $baseDir . $this->cache_dir;
