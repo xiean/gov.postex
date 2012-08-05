@@ -358,12 +358,14 @@ button {
 .mt20x  {margin-top:20px}
 .ml20x  {margin-left:20px}
 .mr20x  {margin-right:20px}
+.mr30x  {margin-right:30px}
 .mr400x {margin-right:400px}
 
 /* 宽度 */
 .w360x  {width:360px}
 .w290x  {width:290px}
 .w300x  {width:300px}
+.w15p   {width:15%}
 .w20p   {width:20%}
 .w28p   {width:28%}
 .w35p   {width:35%}

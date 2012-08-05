@@ -1,5 +1,13 @@
 <!-- INCLUDE header.html -->
 
+<script type="text/javascript" language="javascript">
+function winClose() {
+    window.opener = null;
+    window.open('','_self');
+    window.close();
+}
+</script>
+
 <div id="contentWrap">
     <div class="w80p ma mt20x">
         <table width="100%" cellpadding="0" cellspacing="40" border="0" class="taC">
@@ -14,9 +22,22 @@
                         核<br /><br />查
                     </button>
                 </td>
+                <!-- IF user="manager" -->
                 <td>
                     <button type="button" class="btnIndex" onclick="location.href='/manage'">
                         管<br /><br />理
+                    </button>
+                </td>
+                <!-- ENDIF -->
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <button type="button" class="w28p h50x fs20" onclick="location.href='/noLogin/1'">
+                        注销帐户
+                    </button>
+                    &nbsp; &nbsp; &nbsp;
+                    <button type="button" class="w28p h50x fs20" onclick="winClose()">
+                        关闭系统
                     </button>
                 </td>
             </tr>

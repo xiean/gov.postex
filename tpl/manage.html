@@ -90,6 +90,42 @@ function clearAll(name)
         }
     }
 }
+
+function userPassSubmit() {
+    if(document.mform.pass.value.length < 1) {
+        alert('您必须输入管理员密码');
+        document.mform.pass.focus();
+        return;
+    }
+    if(document.mform.nmpass.value != document.mform.rmpass.value) {
+        alert('新管理员密码两次输入不符');
+        document.mform.nmpass.focus();
+        return;
+    }
+    if(document.mform.nppass.value != document.mform.rppass.value) {
+        alert('新通信员密码两次输入不符');
+        document.mform.nppass.focus();
+        return;
+    }
+    if(document.mform.nmpass.value.length > 0 && isNaN(document.mform.nmpass.value)) {
+        alert('新管理员密码必须为数字');
+        document.mform.nmpass.focus();
+        return;
+    }
+    if(document.mform.nppass.value.length > 0 && isNaN(document.mform.nppass.value)) {
+        alert('新通信员密码必须为数字');
+        document.mform.nppass.focus();
+        return;
+    }
+    $.post("/ajax/manage_userPass_do/", $('#mform').serialize(), function(r) {
+        if(r.length > 0) {
+            alert(r);
+            return;
+        }
+        alert('密码修改成功，请重新登入');
+        location.href='/noLogin/1';
+    });
+}
 </script>
 
 <div id="contentWrap">
@@ -108,6 +144,9 @@ function clearAll(name)
                 <li><span>&nbsp;单位管理</span></li>
                 <li><a href="#" onclick="manageLoad('unitList')">单位列表</a></li>
                 <li><a href="#" onclick="manageLoad('unitGroup')">受文单位编组</a></li>
+                <li><span>&nbsp;用户管理</span></li>
+                <li><a href="#" onclick="manageLoad('userPass')">登录密码修改</a></li>
+                <!-- <li><a href="#" onclick="manageLoad('userName')">线路通信员设置</a></li> -->
                 <!-- <li><span>&nbsp;公文查询</span></li> -->
             </ol>
             </td>

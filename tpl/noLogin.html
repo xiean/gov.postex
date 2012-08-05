@@ -1,8 +1,26 @@
 <!-- INCLUDE header.html -->
 
+<script type="text/javascript" language="javascript">
+var ci="";
+function clickPAD(num) {
+    if(num == 10) {
+        ci = "";
+    } else if(num == 11) {
+        $('#mform').submit();
+        return;
+    } else {
+        ci = ci+num;
+    }
+    $('#pass').val(ci);
+}
+</script>
+
+
 <div id="contentWrap">
     <div class="w290x ma mt20x">
-        <input name="pass" type="password" class="w290x fs20" />
+        <form id="mform" action="/noLogin" method="post" name="mform">
+        <input id="pass" name="pass" type="password" class="w290x fs20" />
+        </form>
         <div class="inputPAD">
             <table width="100%" cellpadding="0" cellspacing="5" border="0">
                 <tr>
@@ -21,9 +39,9 @@
                     <td><button type="button" onclick="clickPAD(9)">9</button></td>
                 </tr>
                 <tr>
-                    <td><button type="button" onclick="hidePAD(1)"><span class="fs06">确定</span></button></td>
+                    <td><button type="button" onclick="clickPAD(11)"><span class="fs06">确定</span></button></td>
                     <td><button type="button" onclick="clickPAD(0)">0</button></td>
-                    <td><button type="button" onclick="hidePAD(0)"><span class="fs06">取消</span></button></td>
+                    <td><button type="button" onclick="clickPAD(10)"><span class="fs06">取消</span></button></td>
                 </tr>
             </table>
         </div>

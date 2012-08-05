@@ -1,0 +1,39 @@
+<div>
+    <form id="mform" name="mform" method="post" action="/manage_userPass">
+        <table width="100%" cellspacing="2" cellpadding="2" border="0">
+            <tr><td></td><td>如不需修改，请留空对应输入框</td></tr>
+            <tr><td height="20" colspan="2">&nbsp;</td></tr>
+            <tr>
+                <td width="30%" align="right">管理员密码</td>
+                <td width="70%"><input name="pass" type="password" class="fs12" /></td>
+            </tr>
+            <tr><td height="20" colspan="2">&nbsp;</td></tr>
+            <tr>
+                <td align="right">管理员新密码</td>
+                <td><input name="nmpass" type="password" class="fs12" /></td>
+            </tr>
+            <tr>
+                <td align="right">重输管理员新密码</td>
+                <td><input name="rmpass" type="password" class="fs12" /></td>
+            </tr>
+            <tr><td height="20" colspan="2">&nbsp;</td></tr>
+            <tr>
+                <td align="right">通信员新密码</td>
+                <td><input name="nppass" type="password" class="fs12" /></td>
+            </tr>
+            <tr>
+                <td align="right">重输通信员新密码</td>
+                <td><input name="rppass" type="password" class="fs12" /></td>
+            </tr>
+            <tr><td height="20" colspan="2">&nbsp;</td></tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button type="button" class="w28p h50x fs16" onclick="userPassSubmit()">
+                        提交
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

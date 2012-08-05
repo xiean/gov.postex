@@ -24,7 +24,7 @@ class postex extends CI_Controller {
 
         // 初始化数据模型
         $this->load->model('db_model', 'user');
-        $this->user->init('user', 'id');
+        $this->user->init('user', 'account');
         $this->load->model('db_model', 'path');
         $this->path->init('path', 'id');
         $this->load->model('db_model', 'unit');
@@ -57,13 +57,38 @@ class postex extends CI_Controller {
     }
 
     // 未登录
-    public function noLogin() {
+    public function noLogin($logout = FALSE) {
+        if( $logout ) {
+            $this->session->unset_userdata('user');
+            $this->tpl->output("noLogin.html");
+            return;
+        }
+        if( $this->session->userdata('user') ) {
+            redirect("/");
+            return;
+        }
+        if( ($pw = $this->input->post('pass')) ) {
+            // 登入处理
+            $manager = $this->user->getById('manager');
+            $poster = $this->user->getById('poster');
+            $login = md5($pw);
+            if( $login == $manager['password'] ) {
+                $this->session->set_userdata('user', "manager");
+            } else if( $login == $poster['password'] ) {
+                $this->session->set_userdata('user', "poster");
+            }
+            redirect("/");
+            return;
+        }
         $this->tpl->output("noLogin.html");
     }
 
     // 首页
     public function index() {
-        $this->tpl->output("index.html");
+        $data = array(
+            'user' => $this->session->userdata('user'),
+        );
+        $this->tpl->output("index.html", $data);
     }
 
     // 发文 - 选择发文线路
@@ -538,7 +563,7 @@ EOF;
     }
 
     // AJAX - 发文 - 发文处理
-    public function ajax_post_doGroup($fuid, $gid, $code) {
+    public function ajax_post_doGroup($fuid, $gid, $code, $insert) {
         // 检查线路锁定
         $pList = $this->path->get(array('local'=>1));
         foreach($pList as $v) {
@@ -549,7 +574,7 @@ EOF;
 
         $ugList = $this->postGroupUnit->get(array('gid'=>$gid));
         foreach($ugList as $v) {
-            $this->ajax_post_do($fuid, $v['uid'], $code, 1);
+            $this->ajax_post_do($fuid, $v['uid'], $code, $insert);
         }
 
     }
@@ -703,10 +728,6 @@ EOF;
             $date = date("Y-m-d", time());
         }
         $pInfo = $this->path->getById($path);
-        $mInfo = $this->user->getById($pInfo['mid']);
-        if( !isset($mInfo['name']) ) {
-            $mInfo['name'] = "";
-        }
         $result = $this->postInfo_path($direction, $path, $date, 1);
         $upList = array();
         $t = array();
@@ -759,7 +780,7 @@ EOF;
             'sPage' => $sPage,
             'name' => $pInfo['name'],
             'alias' => $pInfo['alias'],
-            'manager' => $mInfo['name'],
+            'manager' => $pInfo['mname'],
             'printDate' => $date,
             'postSum' => $this->postInfo_sum($direction, "path", $path, $date),
             'list' => $list,
@@ -778,10 +799,6 @@ EOF;
             $date = date("Y-m-d", time());
         }
         $pInfo = $this->path->getById($path);
-        $mInfo = $this->user->getById($pInfo['mid']);
-        if( !isset($mInfo['name']) ) {
-            $mInfo['name'] = "";
-        }
         $uList = $this->unit->get(array('pid'=>$path), "seq");
         $printList = array();
         $cp = 1;
@@ -827,7 +844,7 @@ EOF;
         $data = array(
             'printTime' => date("Y-m-d H:i - ", time()). substr(md5(time()),0,4),
             'sPage' => count($printList),
-            'manager' => $mInfo['name'],
+            'manager' => $pInfo['mname'],
             'postDate' => $pDate ? $pDate : $date,
             'printList' => $printList,
         );
@@ -835,7 +852,7 @@ EOF;
         $this->tpl->output("manage_printViewUnit.html", $data);
     }
 
-        // AJAX - 管理 - 汇总表预览
+    // AJAX - 管理 - 汇总表预览
     public function ajax_manage_printViewStats($date = FALSE) {
         if( $date === FALSE ) {
             $date = date("Y-m-d", time());
@@ -927,8 +944,8 @@ EOF;
                     array(
                         'name' => $this->input->post('name'),
                         'alias' => $this->input->post('alias'),
+                        'mname' => $this->input->post('mname'),
                         'local' => 1,
-                        'mid' => 0,
                         'seq' => 0,
                     )
                 );
@@ -938,6 +955,7 @@ EOF;
                     array(
                         'name' => $this->input->post('name'),
                         'alias' => $this->input->post('alias'),
+                        'mname' => $this->input->post('mname'),
                     ),
                     array('id'=>$this->input->post('id'))
                 );
@@ -1128,6 +1146,31 @@ EOF;
             } else {
                 $this->postGroupUnit->rm(array('gid'=>$gid,'uid'=>$uid), 999999);
             }
+        }
+    }
+
+    // AJAX - 管理 - 登录密码修改
+    public function ajax_manage_userPass() {
+        return $this->tpl->output("manage_userPass.html", FALSE, TRUE);
+    }
+
+    // AJAX - 管理 - 登录密码修改
+    public function ajax_manage_userPass_do() {
+        $manager = $this->user->getById('manager');
+        if( $manager['password'] != md5($this->input->post('pass')) ) {
+            return "管理员旧密码不符，密码修改失败";
+        }
+        if( $this->input->post('nmpass') ) {
+            $this->user->set(
+                    array('password'=>md5($this->input->post('nmpass'))),
+                    array('account'=>'manager')
+                    );
+        }
+        if( $this->input->post('nppass') ) {
+            $this->user->set(
+                    array('password'=>md5($this->input->post('nppass'))),
+                    array('account'=>'poster')
+                    );
         }
     }
 

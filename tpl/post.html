@@ -42,7 +42,7 @@ function post(uid, insert) {
             alert(data);
             return;
         } else {
-            loadPostInfoSide();
+loadPostInfoSide();
             if( insert ) {
                 tmp = 1;
                 if( $('#bps'+uid).text().length > 0 ) {
@@ -63,7 +63,7 @@ function postGroup(gid) {
         alert("您必须填写 '文号' 才能选择受文单位！");
         return;
     }
-    $.get("/ajax/post_doGroup/{{unitId}}/"+gid+"/"+$('#postCode').text(), function(data) {
+    $.get("/ajax/post_doGroup/{{unitId}}/"+gid+"/"+$('#postCode').text()+"/"+radioValue(document.rform.group), function(data) {
         if( data.length > 0 ) {
             alert(data);
             return;
@@ -102,6 +102,24 @@ function unitPage(p) {
         $('#unitList').load("/ajax/post_unitList/{{unitId}}/"+$('#postCode').text()+"/"+page);
     }
 }
+
+function changeRadio(obj, v) {
+    for(var i=0; i < obj.length; i++) {
+        if( obj[i].value == v ) {
+            obj[i].checked = true;
+            break;
+        }
+    }
+}
+
+function radioValue(obj) {
+    for(var i = 0; i < obj.length; i++) {
+        if( obj[i].checked == true ) {
+            return obj[i].value;
+        }
+    }
+}
+
 
 //iv = setInterval("loadPostInfoSide()", 1000);
 $(function() {
@@ -146,6 +164,7 @@ $(function() {
     <div class="pfRight">
         <div id="unitList" class="listB h400x ofH"></div>
         <div class="mt20x">
+            <form name="rform">
             <!--
             <input type="text" id="inputFilter" class="inputFilter w40p" onpropertychange="filterUnit(this.value)" oninput="filterUnit(this.value)" />
             &nbsp;
@@ -155,9 +174,16 @@ $(function() {
             <button type="button" class="h50x ml20x fs14" onclick="postGroup('{{id}}')">{{name}}</button>
             <!-- END groupList -->
             <!-- ENDIF -->
-            <button type="button" class="w20p h50x fR mr20x fs14" onclick="unitPage(1)">下页</button>
+            <button type="button" class="w15p h50x fR mr20x fs14" onclick="unitPage(1)">下页</button>
             <button id="pageNum" type="button" class="h50x fR mr20x fs14" disabled>1</button>
-            <button type="button" class="w20p h50x fR mr20x fs14" onclick="unitPage(-1)">上页</button>
+            <button type="button" class="w15p h50x fR mr20x fs14" onclick="unitPage(-1)">上页</button>
+            <button type="button" class="h50x fR mr30x fs14" onclick="changeRadio(document.rform.group, 0)">
+                <input name="group" type="radio" value="0" checked />&nbsp;组删
+            </button>
+            <button type="button" class="h50x fR mr20x fs14" onclick="changeRadio(document.rform.group, 1)">
+                <input name="group" type="radio" value="1" checked />&nbsp;组发
+            </button>
+            </form>
         </div>
     </div>
 </div>
