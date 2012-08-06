@@ -10,6 +10,25 @@ button {
     overflow: hidden;
     cursor: pointer;
 }
+#postDo {
+    height: 36px;
+    border: 2px #0033ff solid;
+}
+#postDo button {
+    line-height: 35px;
+    margin: 0;
+    padding: 0 15px 0 15px;
+    font-size: 1em;
+    border: 0;
+}
+.btnPD {
+    background: #dde7ff;
+}
+.btnPDH {
+    color: #6699ff;
+    background: #3366ff;
+}
+
 .btn1 {
     background: #ffcc99;
     border: 2px #990000 solid;
@@ -362,6 +381,8 @@ button {
 .mr400x {margin-right:400px}
 
 /* 宽度 */
+.w50x   {width:50px}
+.w70x   {width:70px}
 .w360x  {width:360px}
 .w290x  {width:290px}
 .w300x  {width:300px}

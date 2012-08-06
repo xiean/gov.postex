@@ -1,7 +1,13 @@
 <ol>
     <!-- BEGIN unitList -->
     <li>
-        <button type="button" onclick="location.href='/post/{{id}}'">{{name}}</button>
+        <button type="button" onclick="location.href='/post/{{id}}'">
+            <!-- IF sname -->
+            {{sname}}
+            <!-- ELSE -->
+            {{name}}
+            <!-- ENDIF -->
+        </button>
     </li>
     <!-- END unitList -->
 </ol>

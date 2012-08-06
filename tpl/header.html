@@ -26,7 +26,7 @@
     <div class="nav">
         <ol class="fL">
             <!-- BEGIN navLeft -->
-            <li onclick="<!-- IF jsfunc -->{{jsfunc}}<!-- ELSE -->location.href='{{uri}}'<!-- ENDIF -->" <!-- IF class -->class="{{class}}"<!-- ENDIF --> >
+            <li <!-- IF jsfunc -->onclick="{{jsfunc}}"<!-- ELSEIF uri -->onclick="location.href='{{uri}}'"<!-- ENDIF --> <!-- IF class -->class="{{class}}"<!-- ENDIF --> >
                 {{text}}
             </li>
             <!-- END navLeft -->

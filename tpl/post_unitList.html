@@ -2,13 +2,17 @@
     <!-- BEGIN unitList -->
     <li><span id="bps{{id}}" class="posSum"></span>
         <button type="button" onclick="post({{id}},1)">
+            <!-- IF sname -->
+            {{sname}}
+            <!-- ELSE -->
             {{name}}
+            <!-- ENDIF -->
         </button>
     </li>
     <!-- END unitList -->
 </ol>
 <script language="javascript">
 <!-- BEGIN postList -->
-setPostSum({{tuid}},{{sum}});
+setPostSum('{{tuid}}',{{sum}});
 <!-- END postList -->
 </script>

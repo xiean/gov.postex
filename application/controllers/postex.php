@@ -200,18 +200,25 @@ class postex extends CI_Controller {
                 ),
                 array(
                     'uri' => "/postPath",
-                    'text' => "{$pInfo['name']}",
+                    'text' => $pInfo['name'],
                     'class' => "btn4",
                 ),
                 array(
                     'uri' => "/postUnit/{$pInfo['id']}",
-                    'text' => "{$uInfo['name']}发文",
+                    'text' => $uInfo['name'],
                     'class' => "btn4",
                 ),
                 array(
-                    'uri' => "#",
-                    'text' => "请填写文号及选择受文单位",
-                    'class' => "btn3",
+                    'text' => <<<EOF
+<div id="postDo">
+    <button id="postChg1" type="button" class="btnPD" onclick="postChg(1)">
+        新增发文
+    </button><button id="postChg0" type="button" class="btnPDH" onclick="postChg(0)">
+        删除发文
+    </button>
+</div>
+EOF
+                    ,
                 ),
             ),
             'navRight' => array(
@@ -227,8 +234,12 @@ class postex extends CI_Controller {
                     'class' => "btn2",
                 ),
             ),
-            'groupList' => $this->postGroup->get(),
+            //'groupList' => $this->postGroup->get(),
+            'pathList' => $this->path->get(array('local'=>'1'), "seq", 10),
         );
+        foreach($data['pathList'] as $k => $v) {
+            $data['pathList'][$k]['spname'] = mb_substr($v['name'], 0, 1);
+        }
 
         $this->tpl->output("post.html", $data);
     }
@@ -487,36 +498,32 @@ class postex extends CI_Controller {
     }
 
     // AJAX - 发文 - 待受文单位列表
-    public function ajax_post_unitList($unit, $code = FALSE, $page = 1, $filter = FALSE) {
+    public function ajax_post_unitList($unit, $code = FALSE, $path = 1, $filter = FALSE) {
         $where = "";
         if( $filter ) {
-            $where = "WHERE `name` LIKE '%{$filter}%' OR `namePY` LIKE '%{$filter}%'";
+            $where = "AND (`name` LIKE '%{$filter}%' OR `namePY` LIKE '%{$filter}%')";
         }
-        $start = ($page-1) * 50;
+
         $qStr = <<<EOF
 SELECT
-    `u`.`id` AS `id`,
-    `u`.`pid` AS `pid`,
-    `u`.`name` AS `name`,
-    `u`.`namePY` AS `namePY`,
-    `b`.`seq` AS `seq`,
-    `b`.`lock` AS `lock`,
-    `b`.`fuid` AS `fuid`
-FROM (
-    `unit` `u`
-    LEFT JOIN `bind` `b` on(
-        (`b`.`tuid` = `u`.`id` AND `b`.`fuid` = '{$unit}')
-    )
-)
-$where
-ORDER BY `u`.`lock` DESC,`u`.`seq`,`b`.`lock` DESC,`b`.`seq` DESC
-LIMIT $start,50
+    *
+FROM `unit`
+WHERE `pid`='$path' AND `tohide`=0 $where
+ORDER BY `seq`
 EOF;
         $data = array('unitList' => $this->db->query($qStr)->result_array());
 
         if( $code ) {
             $data['postList'] = $this->postInfo_unit("from", $unit, $code);
+            $pSumList = array();
+            foreach($data['postList'] as $k => $v) {
+                $pSumList[$v['tpid']] += $v['sum'];
+            }
+            foreach($pSumList as $k => $v) {
+                $data['postList'][] = array('tuid'=>"p{$k}",'sum'=>$v);
+            }
         }
+
         foreach($data['unitList'] as $k => $v) {
             $data['unitList'][$k]['name'] = $this->autoSize($v['name']);
         }
@@ -554,10 +561,10 @@ EOF;
                 'code' => $code
             );
         if( $insert ) {
-            $this->unitBind_update($fuid, $tuid);
+            //$this->unitBind_update($fuid, $tuid);
             $this->post->set($data);
         } else {
-            $this->unitBind_update($fuid, $tuid, -1);
+            //$this->unitBind_update($fuid, $tuid, -1);
             $this->post->rm($data);
         }
     }
@@ -1009,11 +1016,13 @@ EOF;
     // AJAX - 管理 - 单位列表及顺序
     public function ajax_manage_unitList() {
         $data = array(
-            'list' => $this->unit->get(NULL, "lock DESC, seq, namePY"),
+            'list' => $this->unit->get(NULL, "pid, seq"),
         );
         foreach($data['list'] as $k => $v) {
             $path = $this->path->getById($v['pid']);
-            $data['list'][$k]['listName'] = "<a href='#' onclick='itemMod({$v['id']})'>{$v['name']} ({$path['name']})</a>";
+            $data['list'][$k]['listName'] = "<a href='#' onclick='itemMod({$v['id']})'>{$path['name']} - {$v['name']} ({$v['sname']})</a>";
+            $data['list'][$k]['action'] = "";
+            /*
             if( isset($data['list'][$k-1]) && $data['list'][$k-1]['lock'] == 1 && $v['lock'] == 1 ) {
                 $data['list'][$k]['action'] = "<a href='#' onclick='itemMove({$v['id']},{$data['list'][$k-1]['id']})'>上移</a>";
             } else {
@@ -1024,6 +1033,8 @@ EOF;
             } else {
                 $data['list'][$k]['action'] .= "";
             }
+             *
+             */
         }
         return $this->tpl->output("manage_list.html", $data, TRUE);
     }
@@ -1063,9 +1074,11 @@ EOF;
             $id = $this->unit->set(
                     array(
                         'name' => $this->input->post('name'),
-                        'namePY' => $this->input->post('namePY'),
+                        'sname' => $this->input->post('sname'),
                         'pid' => $this->input->post('pid'),
-                        'lock' => $this->input->post('lock'),
+                        'tohide' => $this->input->post('tohide'),
+                        'namePY' => "",
+                        'lock' => 0,
                         'seq' => 0,
                     )
                 );
@@ -1075,9 +1088,9 @@ EOF;
             $this->unit->set(
                     array(
                         'name' => $this->input->post('name'),
-                        'namePY' => $this->input->post('namePY'),
+                        'sname' => $this->input->post('sname'),
                         'pid' => $this->input->post('pid'),
-                        'lock' => $this->input->post('lock'),
+                        'tohide' => $this->input->post('tohide'),
                     ),
                     array('id'=>$this->input->post('id'))
                 );

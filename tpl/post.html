@@ -2,7 +2,8 @@
 
 <!-- INCLUDE postInfo.html -->
 <script type="text/javascript" language="javascript">
-var page = 1;
+var postState = 1; // 发文状态
+var toPath = 1;
 var pn = "";
 var ci = "";
 var iv;
@@ -32,29 +33,42 @@ function loadPostInfoSide() {
         $('#piSide').load("/ajax/post_postList/{{unitId}}/"+$('#postCode').text());
     }
 }
-function post(uid, insert) {
+function post(uid) {
     if( $('#postCode').text().length == 0 ) {
         alert("您必须填写 '文号' 才能选择受文单位！");
         return;
     }
-    $.get("/ajax/post_do/{{unitId}}/"+uid+"/"+$('#postCode').text()+"/"+insert, function(data) {
+    $.get("/ajax/post_do/{{unitId}}/"+uid+"/"+$('#postCode').text()+"/"+postState, function(data) {
         if( data.length > 0 ) {
             alert(data);
             return;
         } else {
-loadPostInfoSide();
-            if( insert ) {
+            loadPostInfoSide();
+            if( postState ) {
+                tsum = 1;
                 tmp = 1;
                 if( $('#bps'+uid).text().length > 0 ) {
                     tmp = parseInt($('#bps'+uid).text())+1;
                 }
+                if( $('#bpsp'+toPath).text().length > 0 ) {
+                    tsum = parseInt($('#bpsp'+toPath).text())+1;
+                }
             } else {
-                tmp = parseInt($('#bps'+uid).text())-1;
-                if( tmp < 1 ) {
+                tsum = parseInt($('#bpsp'+toPath).text());
+                tmp = parseInt($('#bps'+uid).text());
+                if( tmp > 0 ) {
+                    tmp -= 1;
+                    tsum -= 1;
+                }
+                if( isNaN(tmp) || tmp == 0 ) {
                     tmp = '';
+                }
+                if( isNaN(tsum) || tsum == 0 ) {
+                    tsum = '';
                 }
             }
             $('#bps'+uid).text(tmp);
+            $('#bpsp'+toPath).text(tsum);
         }
     });
 }
@@ -90,16 +104,12 @@ function filterUnit(str) {
     }
 }
 
-function unitPage(p) {
-    page += p;
-    if( page < 1 ) {
-        page = 1;
-    }
-    $('#pageNum').text(page);
+function unitPath(p) {
+    toPath = p;
     if( $('#postCode').text().length == 0 ) {
-        $('#unitList').load("/ajax/post_unitList/{{unitId}}/0/"+page);
+        $('#unitList').load("/ajax/post_unitList/{{unitId}}/0/"+p);
     } else {
-        $('#unitList').load("/ajax/post_unitList/{{unitId}}/"+$('#postCode').text()+"/"+page);
+        $('#unitList').load("/ajax/post_unitList/{{unitId}}/"+$('#postCode').text()+"/"+p);
     }
 }
 
@@ -117,6 +127,21 @@ function radioValue(obj) {
         if( obj[i].checked == true ) {
             return obj[i].value;
         }
+    }
+}
+
+function postChg(state) {
+    postState = state;
+    if( state == 1) {
+        $('#postChg1').removeClass("btnPDH");
+        $('#postChg1').addClass("btnPD");
+        $('#postChg0').removeClass("btnPD");
+        $('#postChg0').addClass("btnPDH");
+    } else if( state == 0) {
+        $('#postChg0').removeClass("btnPDH");
+        $('#postChg0').addClass("btnPD");
+        $('#postChg1').removeClass("btnPD");
+        $('#postChg1').addClass("btnPDH");
     }
 }
 
@@ -162,29 +187,27 @@ $(function() {
         <div id="piSide"></div>
     </div>
     <div class="pfRight">
-        <div id="unitList" class="listB h400x ofH"></div>
         <div class="mt20x">
             <form name="rform">
             <!--
             <input type="text" id="inputFilter" class="inputFilter w40p" onpropertychange="filterUnit(this.value)" oninput="filterUnit(this.value)" />
             &nbsp;
             <!-- <a href="#" id="unitAdd" class="thickbox unitAdd" style="display:none" title="新增单位">新增单位</a> -->
-            <!-- IF pathId="6" -->
-            <!-- BEGIN groupList -->
-            <button type="button" class="h50x ml20x fs14" onclick="postGroup('{{id}}')">{{name}}</button>
-            <!-- END groupList -->
-            <!-- ENDIF -->
-            <button type="button" class="w15p h50x fR mr20x fs14" onclick="unitPage(1)">下页</button>
-            <button id="pageNum" type="button" class="h50x fR mr20x fs14" disabled>1</button>
-            <button type="button" class="w15p h50x fR mr20x fs14" onclick="unitPage(-1)">上页</button>
-            <button type="button" class="h50x fR mr30x fs14" onclick="changeRadio(document.rform.group, 0)">
-                <input name="group" type="radio" value="0" checked />&nbsp;组删
-            </button>
-            <button type="button" class="h50x fR mr20x fs14" onclick="changeRadio(document.rform.group, 1)">
-                <input name="group" type="radio" value="1" checked />&nbsp;组发
-            </button>
+
+            <div class="fR mr30x">
+                <!-- BEGIN pathList -->
+                <span id="bpsp{{id}}" class="posSum"></span>
+                <button type="button" class="w70x h50x fs14" onclick="unitPath({{id}})">{{spname}}</button>&nbsp;&nbsp;
+                <!-- END pathList -->
+            </div>
+            <div class="h50x">
+                <!-- BEGIN groupList -->
+                <button type="button" class="h50x ml20x fs14" onclick="postGroup('{{id}}')">{{name}}</button>
+                <!-- END groupList -->
+            </div>
             </form>
         </div>
+        <div id="unitList" class="listB h400x ofH"></div>
     </div>
 </div>
 <!-- INCLUDE footer.html -->
