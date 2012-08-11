@@ -4,9 +4,26 @@
 <script type="text/javascript" language="javascript">
 var postState = 1; // 发文状态
 var toPath = 1;
+var gMod = 0; // 组编辑开关
 var pn = "";
 var ci = "";
 var iv;
+function groupMod() {
+    if( gMod == 0) {
+        gMod = 1;
+        $('#gmBtn').removeClass("btn4");
+        $('#gmBtn').addClass("btn5");
+        $('#gpBtn').addClass("btn3");
+        $('#gmBtn').text("群发编辑：开");
+    } else {
+        gMod = 0;
+        $('#gmBtn').removeClass("btn5");
+        $('#gmBtn').addClass("btn4");
+        $('#gpBtn').removeClass("btn3");
+        $('#gmBtn').text("群发编辑：关");
+    }
+    unitPath(1);
+}
 function showPAD() {
     clearInterval(iv);
     $('#pnPAD').show();
@@ -34,8 +51,50 @@ function loadPostInfoSide() {
     }
 }
 function post(uid) {
+    // 组发辑辑
+    if( gMod == 1 ) {
+        $.get("/ajax/post_doGroup/{{unitId}}/"+uid+"/-1/"+postState, function(data) {
+            if( data.length > 0 ) {
+                alert(data);
+                return;
+            } else {
+                // loadPostInfoSide();
+                if( postState ) {
+                    tsum = 1;
+                    tmp = 1;
+                    if( $('#bps'+uid).text().length > 0 ) {
+                        tmp = parseInt($('#bps'+uid).text())+1;
+                    }
+                    if( $('#bpsp'+toPath).text().length > 0 ) {
+                        tsum = parseInt($('#bpsp'+toPath).text())+1;
+                    }
+                } else {
+                    tsum = parseInt($('#bpsp'+toPath).text());
+                    tmp = parseInt($('#bps'+uid).text());
+                    if( tmp > 0 ) {
+                        tmp -= 1;
+                        tsum -= 1;
+                    }
+                    if( isNaN(tmp) || tmp == 0 ) {
+                        tmp = '';
+                    }
+                    if( isNaN(tsum) || tsum == 0 ) {
+                        tsum = '';
+                    }
+                }
+                $('#bps'+uid).text(tmp);
+                $('#bpsp'+toPath).text(tsum);
+            }
+        });
+        return;
+    }
+
     if( $('#postCode').text().length == 0 ) {
         alert("您必须填写 '文号' 才能选择受文单位！");
+        return;
+    }
+    if( pnPAD.style.display != "none" ) {
+        alert("您必须 >>确认<< '文号' 才能选择受文单位！");
         return;
     }
     $.get("/ajax/post_do/{{unitId}}/"+uid+"/"+$('#postCode').text()+"/"+postState, function(data) {
@@ -72,27 +131,27 @@ function post(uid) {
         }
     });
 }
-function postGroup(gid) {
+function postGroup() {
     if( $('#postCode').text().length == 0 ) {
         alert("您必须填写 '文号' 才能选择受文单位！");
         return;
     }
-    $.get("/ajax/post_doGroup/{{unitId}}/"+gid+"/"+$('#postCode').text()+"/"+radioValue(document.rform.group), function(data) {
+    $.get("/ajax/post_doGroup/{{unitId}}/0/"+$('#postCode').text()+"/"+postState, function(data) {
         if( data.length > 0 ) {
             alert(data);
             return;
         } else {
             loadPostInfoSide();
-            unitPage(1);
+            unitPath(1);
         }
     });
 }
 
 function setPostSum(id, sum) {
     if(sum) {
-        $('#bps'+id).text(sum);
+        $("#bps"+id).text(sum);
     } else {
-        $('#bps'+id).text('');
+        $("#bps"+id).text('');
     }
 }
 
@@ -106,10 +165,15 @@ function filterUnit(str) {
 
 function unitPath(p) {
     toPath = p;
-    if( $('#postCode').text().length == 0 ) {
-        $('#unitList').load("/ajax/post_unitList/{{unitId}}/0/"+p);
+    if( gMod == 1 ) {
+        // 组编辑
+        $('#unitList').load("/ajax/post_unitList/{{unitId}}/-1/"+p);
     } else {
-        $('#unitList').load("/ajax/post_unitList/{{unitId}}/"+$('#postCode').text()+"/"+p);
+        if( $('#postCode').text().length == 0 ) {
+            $('#unitList').load("/ajax/post_unitList/{{unitId}}/0/"+p);
+        } else {
+            $('#unitList').load("/ajax/post_unitList/{{unitId}}/"+$('#postCode').text()+"/"+p);
+        }
     }
 }
 
@@ -148,7 +212,8 @@ function postChg(state) {
 
 //iv = setInterval("loadPostInfoSide()", 1000);
 $(function() {
-    filterUnit('');
+    //filterUnit('');
+    unitPath(1);
     loadPostInfoSide();
 });
 </script>
@@ -194,16 +259,16 @@ $(function() {
             &nbsp;
             <!-- <a href="#" id="unitAdd" class="thickbox unitAdd" style="display:none" title="新增单位">新增单位</a> -->
 
-            <div class="fR mr30x">
+            <div class="fR mr30x fs08">
                 <!-- BEGIN pathList -->
                 <span id="bpsp{{id}}" class="posSum"></span>
-                <button type="button" class="w70x h50x fs14" onclick="unitPath({{id}})">{{spname}}</button>&nbsp;&nbsp;
+                <button type="button" class="w70x h50x fs14" onclick="unitPath({{id}})">
+                    {{spname}}
+                </button>&nbsp;&nbsp;
                 <!-- END pathList -->
             </div>
             <div class="h50x">
-                <!-- BEGIN groupList -->
-                <button type="button" class="h50x ml20x fs14" onclick="postGroup('{{id}}')">{{name}}</button>
-                <!-- END groupList -->
+                <button id="gpBtn" type="button" class="h50x ml20x fs14" onclick="postGroup()" <!-- IF groupSum<"1" -->disabled<!-- ENDIF --> >&nbsp;&nbsp;受文单位群发&nbsp;&nbsp;</button>
             </div>
             </form>
         </div>

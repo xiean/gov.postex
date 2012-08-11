@@ -77,12 +77,11 @@ class db_model extends CI_Model {
                 ->get()->result_array();
     }
 
-    public function getById($id) {
+    public function getById($id, $filter = array()) {
+        $where = array_merge(array($this->id => $id), $filter);
         return $this->db
                 ->from($this->table)
-                ->where(array(
-                    $this->id => $id,
-                ))
+                ->where($where)
                 ->get()->row_array();
     }
 

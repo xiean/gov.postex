@@ -7,17 +7,20 @@
 <div id="parcelList" class="h300x ofyA">
     <table width="100%" cellspacing="0" cellpadding="5" border="0">
         <!-- BEGIN postList -->
+        <!-- IF tuname -->
         <tr class="tabData{{ROWBIT}} cP">
             <td width="20%" height="40" class="taC">{{sum}}</td>
             <td width="80%">{{tuname}}</td>
         </tr>
+        <!-- ENDIF -->
         <!-- END postList -->
     </table>
 </div>
-<button type="button" class="w48p h50x fL fs14" onclick="scrollTo('parcelList','','-=240px')">上翻</button>
-<button type="button" class="w48p h50x fR fs14" onclick="scrollTo('parcelList','','+=240px')">下翻</button>
+<div class="taC" style="border-top:1px #003399 solid">
+    总发 <span class="fs16" style="color:#FF0000">{{codeSum}}</span> 件
+</div>
 <script language="javascript">
 <!-- BEGIN postList -->
-setPostSum({{tuid}},{{sum}});
+setPostSum('{{tuid}}',{{sum}});
 <!-- END postList -->
 </script>

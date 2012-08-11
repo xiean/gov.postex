@@ -18,8 +18,16 @@
             </select>
     </tr>
     <tr>
-        <td align="right">受文隐藏</td>
-        <td><input name="tohide" type="checkbox" value="1" <!-- IF tohide -->checked<!-- ENDIF --> /></td>
+        <td align="right">不隐藏</td>
+        <td><input name="tohide" type="radio" value="0" <!-- IF tohide>"1" --><!-- ELSE -->checked<!-- ENDIF --> /></td>
+    </tr>
+    <tr>
+        <td align="right">发文时隐藏</td>
+        <td><input name="tohide" type="radio" value="2" <!-- IF tohide="2" -->checked<!-- ENDIF --> /></td>
+    </tr>
+    <tr>
+        <td align="right">受文时隐藏</td>
+        <td><input name="tohide" type="radio" value="1" <!-- IF tohide="1" -->checked<!-- ENDIF --> /></td>
     </tr>
     <tr>
         <td colspan="2" align="center">

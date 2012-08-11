@@ -33,9 +33,17 @@
         </ol>
         <ol class="fR">
             <!-- BEGIN navRight -->
+            <!-- IF manage -->
+                <!-- IF parent.user="manager" -->
+                <li <!-- IF id -->id="{{id}}"<!-- ENDIF --> onclick="<!-- IF jsfunc -->{{jsfunc}}<!-- ELSE -->location.href='{{uri}}'<!-- ENDIF -->" <!-- IF class -->class="{{class}}"<!-- ENDIF --> >
+                {{text}}
+                </li>
+                <!-- ENDIF -->
+            <!-- ELSE -->
             <li <!-- IF id -->id="{{id}}"<!-- ENDIF --> onclick="<!-- IF jsfunc -->{{jsfunc}}<!-- ELSE -->location.href='{{uri}}'<!-- ENDIF -->" <!-- IF class -->class="{{class}}"<!-- ENDIF --> >
                 {{text}}
             </li>
+            <!-- ENDIF -->
             <!-- END navRight -->
         </ol>
         <div class="clear"></div>

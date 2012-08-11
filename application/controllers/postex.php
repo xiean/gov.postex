@@ -30,9 +30,7 @@ class postex extends CI_Controller {
         $this->load->model('db_model', 'unit');
         $this->unit->init('unit', 'id');
         $this->load->model('db_model', 'postGroup');
-        $this->postGroup->init('postGroup', 'id');
-        $this->load->model('db_model', 'postGroupUnit');
-        $this->postGroupUnit->init('postGroupUnit', 'id');
+        $this->postGroup->init('postGroup', 'fuid');
         $this->load->model('db_model', 'post');
         $this->post->init('post', 'id');
         $this->load->model('db_model', 'bind');
@@ -43,6 +41,8 @@ class postex extends CI_Controller {
         // 初始化视图模型
         $this->load->model('db_model', 'postInfo');
         $this->postInfo->init('postInfo', 'date');
+        $this->load->model('db_model', 'postGroupUnit');
+        $this->postGroupUnit->init('postGroupUnit', 'fuid');
 
         // 初始化Session
         $this->load->library('session');
@@ -85,10 +85,8 @@ class postex extends CI_Controller {
 
     // 首页
     public function index() {
-        $data = array(
-            'user' => $this->session->userdata('user'),
-        );
-        $this->tpl->output("index.html", $data);
+
+        $this->tpl->output("index.html", array());
     }
 
     // 发文 - 选择发文线路
@@ -187,11 +185,13 @@ class postex extends CI_Controller {
         $pInfo = $this->path->getById($uInfo['pid']);
 
         $data = array(
+            'user' => $this->session->userdata('user'),
             'title' => "发文",
             'pathId' => $pInfo['id'],
             'unitId' => $uInfo['id'],
             'unitName' => $uInfo['name'],
             'code' => $code,
+            'groupSum' => $this->postGroupUnit->count(array('fuid'=>$unit,'ttohide !='=>1)),
             'navLeft' => array(
                 array(
                     'uri' => "/",
@@ -222,6 +222,13 @@ EOF
                 ),
             ),
             'navRight' => array(
+                array(
+                    'manage' => 1,
+                    'id' => "gmBtn",
+                    'jsfunc' => "groupMod()",
+                    'text' => "群发编辑：关",
+                    'class' => "btn4",
+                ),
                 array(
                     'id' => "postTitle",
                     'jsfunc' => "togglePostInfo()",
@@ -294,11 +301,12 @@ EOF
         }
 
         // 今日收文列表
-        $result = $this->postInfo_path("from", $path);
+        //$result = $this->postInfo_path("from", $path);
+        $result = $this->postInfo_path("to", $path, FALSE, 1);
         $left = array();
         $t = array();
         foreach($result as $v) {
-            if( count($t) == 0 || $t[0]['fuid'] == $v['fuid']) {
+            if( count($t) == 0 || ($t[0]['fuid'] == $v['fuid'] && $t[0]['code'] == $v['code']) ) {
                 $t[] = $v;
                 continue;
             }
@@ -308,7 +316,7 @@ EOF
             }
             $left[] = array(
                 'funame' => $t[0]['funame'],
-                'code' => "总发文",
+                'code' => $t[0]['code'],
                 'sum' => $c,
                 'tuname' => '',
                 'count' => 1
@@ -323,7 +331,7 @@ EOF
             }
             $left[] = array(
                 'funame' => $t[0]['funame'],
-                'code' => "总发文",
+                'code' => $t[0]['code'],
                 'sum' => $c,
                 'tuname' => '',
                 'count' => 1
@@ -423,6 +431,7 @@ EOF
     // 管理 - 管理首页
     public function manage() {
         $data = array(
+            'user' => $this->session->userdata('user'),
             'title' => "管理",
             'navLeft' => array(
                 array(
@@ -484,7 +493,7 @@ EOF
 
     // AJAX - 发文 - 线路单位列表
     public function ajax_postUnit_unitList($path, $filter = FALSE) {
-        $where = "pid = '{$path}'";
+        $where = "pid = '{$path}' AND `tohide` != 2";
         if( $filter ) {
             $where .= "AND (`name` LIKE '%{$filter}%' OR `namePY` LIKE '%{$filter}%')";
         }
@@ -508,21 +517,47 @@ EOF
 SELECT
     *
 FROM `unit`
-WHERE `pid`='$path' AND `tohide`=0 $where
+WHERE `pid`='$path' AND `tohide`!=1 $where
 ORDER BY `seq`
 EOF;
         $data = array('unitList' => $this->db->query($qStr)->result_array());
 
-        if( $code ) {
+        if( $code != -1 ) {
             $data['postList'] = $this->postInfo_unit("from", $unit, $code);
+            $pathList = $this->path->get(array('local'=>1));
             $pSumList = array();
+            foreach($pathList as $k => $v) {
+                $pSumList[$v['id']] = 0;
+            }
             foreach($data['postList'] as $k => $v) {
                 $pSumList[$v['tpid']] += $v['sum'];
             }
-            foreach($pSumList as $k => $v) {
-                $data['postList'][] = array('tuid'=>"p{$k}",'sum'=>$v);
+            foreach($pathList as $k => $v) {
+                $data['postList'][] = array('tuid'=>"p{$v['id']}",'sum'=>$pSumList[$v['id']]);
+            }
+        } else if( $code == -1 ) {
+            // 组编辑
+            $data['postList'] = $this->postGroupUnit->get(array('fuid'=>$unit,'ttohide !=' => "1"));
+            $pathList = $this->path->get();
+            $pSumList = array();
+            foreach($pathList as $k => $v) {
+                $pSumList[$v['id']] = 0;
+            }
+            foreach($data['postList'] as $k => $v) {
+                $pSumList[$v['tpid']] += $v['sum'];
+            }
+            foreach($pathList as $k => $v) {
+                $data['postList'][] = array('tuid'=>"p{$v['id']}",'sum'=>$pSumList[$v['id']]);
+            }
+        } /*else {
+            $data['postList'] = array();
+            $pathList = $this->path->get();
+            foreach($pathList as $k => $v) {
+                $data['postList'][] = array('tuid'=>"p{$v['id']}",'sum'=>0);
             }
         }
+         *
+         */
 
         foreach($data['unitList'] as $k => $v) {
             $data['unitList'][$k]['name'] = $this->autoSize($v['name']);
@@ -534,8 +569,22 @@ EOF;
     // AJAX - 发文 - 已受文列表
     public function ajax_post_postList($unit, $code) {
         $data = array(
+            'code' => $code,
+            'codeSum' => 0,
             'postList' => $this->postInfo_unit("from", $unit, $code),
             );
+        $pathList = $this->path->get();
+        $pSumList = array();
+        foreach($pathList as $k => $v) {
+            $pSumList[$v['id']] = 0;
+        }
+        foreach($data['postList'] as $k => $v) {
+            $pSumList[$v['tpid']] += $v['sum'];
+            $data['codeSum'] += $v['sum'];
+        }
+        foreach($pathList as $k => $v) {
+            $data['postList'][] = array('tuid'=>"p{$v['id']}",'sum'=>$pSumList[$v['id']]);
+        }
 
         return $this->tpl->output("post_postList.html", $data, TRUE);
     }
@@ -569,8 +618,18 @@ EOF;
         }
     }
 
-    // AJAX - 发文 - 发文处理
-    public function ajax_post_doGroup($fuid, $gid, $code, $insert) {
+    // AJAX - 发文 - 组发处理
+    public function ajax_post_doGroup($fuid, $tuid, $code, $insert) {
+        if( $code == -1 ) {
+            // 组发编辑
+            if( $insert == 1 ) {
+                $this->postGroup->set(array('fuid'=>$fuid,'tuid'=>$tuid));
+            } else {
+                $this->postGroup->rm(array('fuid'=>$fuid,'tuid'=>$tuid));
+            }
+            return;
+        }
+
         // 检查线路锁定
         $pList = $this->path->get(array('local'=>1));
         foreach($pList as $v) {
@@ -579,9 +638,9 @@ EOF;
             }
         }
 
-        $ugList = $this->postGroupUnit->get(array('gid'=>$gid));
+        $ugList = $this->postGroup->get(array('fuid'=>$fuid));
         foreach($ugList as $v) {
-            $this->ajax_post_do($fuid, $v['uid'], $code, $insert);
+            $this->ajax_post_do($fuid, $v['tuid'], $code, $insert);
         }
 
     }
