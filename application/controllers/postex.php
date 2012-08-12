@@ -166,7 +166,7 @@ class postex extends CI_Controller {
                     'class' => "btn5",
                 ),
                 array(
-                    'uri' => "/post",
+                    'uri' => "/postPath",
                     'text' => "&nbsp;返 回&nbsp;",
                     'class' => "btn2",
                 ),
@@ -236,7 +236,7 @@ EOF
                     'class' => "btn5",
                 ),
                 array(
-                    'uri' => "/postPath/{$pInfo['id']}",
+                    'uri' => "/postUnit/{$pInfo['id']}",
                     'text' => "&nbsp;返 回&nbsp;",
                     'class' => "btn2",
                 ),
@@ -706,6 +706,31 @@ EOF;
         );
 
         return $this->tpl->output("postInfo_postList.html", $data, TRUE);
+    }
+
+    // AJAX - 管理 - 查询打印
+    public function ajax_manage_query() {
+        switch(date("w",time())) {
+            case 0: case 1: case 2: case 3: case 4:
+                $datePost = date("Y-m-d",time()+86400);
+                break;
+            case 5:
+                $datePost = date("Y-m-d",time()+86400*3);
+                break;
+            case 6:
+                $datePost = date("Y-m-d",time()+86400*2);
+                break;
+        }
+        $date = date("Y-m-d", time());
+        $pathList = $this->path->get(array('local'=>1));
+        $data = array(
+            'dateBegin' => $date,
+            'dateEnd' => $date,
+            'datePost' => $datePost,
+            'pathList' => $pathList,
+        );
+
+        $this->tpl->output("manage_query.html", $data);
     }
 
     // AJAX - 管理 - 发文单线路选择
@@ -1243,6 +1268,64 @@ EOF;
                     array('password'=>md5($this->input->post('nppass'))),
                     array('account'=>'poster')
                     );
+        }
+    }
+
+    // AJAX - 管理 - 查询请求处理
+    public function ajax_manage_query_do() {
+        $where = array(
+            'date >=' => $this->input->post('dateBegin'),
+            'date <=' => $this->input->post('dateEnd'),
+            'code like' => "%".$this->input->post('code')."%",
+        );
+        if( $this->input->post('pathFrom') > 0 ) {
+            $where['fpid'] = $this->input->post('pathFrom');
+        }
+        if( $this->input->post('pathTo') > 0 ) {
+            $where['tpid'] = $this->input->post('pathTo');
+        }
+        if( $this->input->post('unitFrom') > 0 ) {
+            $where['fuid'] = $this->input->post('unitFrom');
+        }
+        if( $this->input->post('unitTo') > 0 ) {
+            $where['tuid'] = $this->input->post('unitTo');
+        }
+        $data = array(
+            'postList' => $this->postInfo->get($where,"`date`,`fpid`,`fuseq`,`code`,`tpid`,`tuseq`"),
+        );
+
+        return $this->tpl->output("manage_queryList.html", $data, TRUE);
+    }
+
+    // AJAX - 管理 - 查询线路单位列表
+    public function ajax_manage_queryPath($path) {
+        if( $path == 0 ) {
+            return;
+        }
+        $unitList = $this->unit->get(array('pid'=>$path));
+        echo "<option value='0' selected>所有单位</option>";
+        foreach($unitList as $v) {
+            echo "<option value='{$v['id']}'>{$v['name']}</option>";
+        }
+    }
+
+    // AJAX - 管理 - 查询打印
+    public function ajax_manage_queryPrint($page) {
+        $date = $this->input->post('dateBegin');
+        $pathFrom = $this->input->post('pathFrom');
+        $pathTo = $this->input->post('pathTo');
+        $datePost = $this->input->post('datePost');
+
+        if( $page == "stats" ) {
+            return $this->ajax_manage_printViewStats($date);
+        } else if( $page == "path" ) {
+            if( $pathFrom > 0 ) {
+                return $this->ajax_manage_printViewPath($pathFrom, "from", $date);
+            } else if( $pathTo > 0 ) {
+                return $this->ajax_manage_printViewPath($pathTo, "to", $date);
+            }
+        } else if( $page == "unit" ) {
+            return $this->ajax_manage_printViewUnit($pathTo, $date, $datePost);
         }
     }
 

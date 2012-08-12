@@ -4,6 +4,9 @@
 var act;
 var cid;
 var printWin;
+function getIFrameDOM(id){//兼容IE、Firefox的iframe DOM获取函数
+	return document.getElementById(id).contentDocument || document.frames[id].document;
+}
 function manageLoad(action) {
     if ( action ) {
         act = action;
@@ -40,6 +43,18 @@ function printView(table, id, direction) {
     }
     printWin = window.open('/tpl/loading.html','Print');
     $.get("/ajax/manage_printView/"+table+"/"+id+"/"+direction+"/"+$('#statsDate').val()+"/"+$('#postDate').val(), function(r) {
+        printWin.document.write(r);
+        printWin.document.all.WebBrowser.ExecWB(7,1);
+        //printWin.document.all.WebBrowser.ExecWB(45,1);
+        printWin.close();
+    });
+}
+function btnPrint(page) {
+    if( printWin ) {
+        printWin.close();
+    }
+    printWin = window.open('/tpl/loading.html','Print');
+    $.post("/ajax/manage_queryPrint/"+page, $('#mform').serialize(), function(r) {
         printWin.document.write(r);
         printWin.document.all.WebBrowser.ExecWB(7,1);
         //printWin.document.all.WebBrowser.ExecWB(45,1);
@@ -126,6 +141,49 @@ function userPassSubmit() {
         location.href='/noLogin/1';
     });
 }
+
+function queryReq() {
+    $.post("/ajax/manage_query_do/", $('#mform').serialize(), function(r) {
+        $('#queryList').html(r);
+        printBtnEnable();
+    });
+}
+
+function queryPath(po, uo) {
+    $.get("/ajax/manage_queryPath/"+po.options[po.selectedIndex].value, function(r) {
+        $("#"+uo).html(r);
+        queryReq();
+    });
+}
+
+function printBtnEnable() {
+    var pfo = document.mform.pathFrom;
+    var pto = document.mform.pathTo;
+    var ufo = document.mform.unitFrom;
+    var uto = document.mform.unitTo;
+    if( pfo.options[pfo.selectedIndex].value == 0 && pto.options[pto.selectedIndex].value == 0 ) {
+        btnStats.disabled = false;
+    } else {
+        btnStats.disabled = true;
+    }
+    if( pfo.options[pfo.selectedIndex].value > 0 && pto.options[pto.selectedIndex].value == 0 && ufo.options[ufo.selectedIndex].value == 0 ) {
+        btnFrom.disabled = false;
+    } else {
+        btnFrom.disabled = true;
+    }
+    if( pfo.options[pfo.selectedIndex].value == 0 && pto.options[pto.selectedIndex].value > 0 && uto.options[uto.selectedIndex].value == 0 ) {
+        btnTo.disabled = false;
+        btnUnit.disabled = false;
+    } else {
+        btnTo.disabled = true;
+        btnUnit.disabled = true;
+    }
+    if( pfo.options[pfo.selectedIndex].value == 0 && pto.options[pto.selectedIndex].value > 0 ) {
+
+    } else {
+
+    }
+}
 </script>
 
 <div id="contentWrap">
@@ -133,7 +191,8 @@ function userPassSubmit() {
         <tr>
             <td width="20%" height="400" class="br1S taR vaT listE">
             <ol>
-                <li><span>&nbsp;单据打印</span></li>
+                <li><span>&nbsp;查询打印</span></li>
+                <li><a href="#" onclick="manageLoad('query')">公文交换查询</a></li>
                 <li><a href="#" onclick="manageLoad('printFrom')">发文单打印</a></li>
                 <li><a href="#" onclick="manageLoad('printTo')">受文单打印</a></li>
                 <li><a href="#" onclick="manageLoad('printUnit')">签收单打印</a></li>

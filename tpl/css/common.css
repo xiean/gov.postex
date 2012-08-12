@@ -272,6 +272,10 @@ button {
     font-weight: bold;
     background: #ffcc00;
 }
+.tabTitleR td {
+    font-weight: bold;
+    background: #ffe7bb;
+}
 
 .pfLeft {
     width: 220px;
@@ -405,6 +409,7 @@ button {
 .h100p  {height:100%}
 .h10x   {height:10px}
 .h20x   {height:20px}
+.h30x   {height:30px}
 .h40x   {height:40px}
 .h50x   {height:50px}
 .h60x   {height:60px}
@@ -418,5 +423,7 @@ button {
 .b1S    {border:1px solid}
 .b2S    {border:2px solid}
 .br1S   {border-right:1px #dd8866 solid}
-
+.bt1S   {border-top:1px #dd8866 solid}
+.bb1S   {border-bottom:1px #dd8866 solid}
+.bb1D   {border-bottom:1px #FF9999 dotted}
 
