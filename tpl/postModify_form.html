@@ -1,0 +1,29 @@
+<table width="100%" cellspacing="0" cellpadding="2" border="0">
+    <tr>
+        <td height="90" width="43%" align="center" class="fs14 bb1D"><span class="fs12">{{name}}</span><br /><span style="color:#FF0000">{{code}}</span>号文</td>
+        <td width="14%" align="center" class="fs14 bb1D">修改为</td>
+        <td width="43%" align="center" class="fs14 bb1D">
+            <button id="postModSubmit" type="button" class="w90p h80x fs12" disabled onclick="postModDo()" >
+            <span id="suname"></span><br /><span id="scode"></span>
+            </button>
+        </td>
+    </tr>
+    <tr>
+        <td height="60" align="center">选择单位<br />
+            <select id="munit" onchange="postModUnit()">
+                <!-- BEGIN muList -->
+                <option value="{{id}}" <!-- IF id=parent.id -->selected<!-- ENDIF --> >{{name}}</option>
+                <!-- END muList -->
+            </select>
+        </td>
+        <td align="center">确认码<br /><span class="fs12" style="color:#FF0000">{{vcode}}</span></td>
+        <td align="center">填写文号<br />
+            <input id="mcode" type="text" class="w40p" onkeyup="postModCode()" />
+        </td>
+    </tr>
+
+</table>
+<script type="text/javascript" language="javascript">
+modCode = '{{vcode}}';
+</script>
+

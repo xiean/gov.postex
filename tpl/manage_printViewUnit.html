@@ -1,12 +1,12 @@
 <html>
-<head>    
+<head>
 <title>公文交换清单打印预览</title>
 <style type="text/css">
     body {margin:0}
     body,td {font-size:15px}
     td {border:1px #000000 solid}
 </style>
-</head> 
+</head>
 
 <body>
 <!-- BEGIN printList -->
@@ -46,7 +46,23 @@
     </tr>
     <!-- END postList -->
     <tr>
-        <td colspan="3" style="height:125px;vertical-align:top"><br />&nbsp; 受文单位签章：</td>
+        <td colspan="3" style="height:125px;vertical-align:top">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                    <!-- IF parent.pathId="6" -->
+                    <td width="40%" style="height:125px;border:0;vertical-align:top">
+                        <br />&nbsp; 交换员签章：
+                    </td>
+                    <td width="60%" style="height:125px;border-left:1px #000000 solid;border-top:0;border-bottom:0;border-right:0;vertical-align:top">
+                        <br />&nbsp; 受文单位签章：
+                    </td>
+                    <!-- ELSE -->
+                    <td colspan="2" style="height:125px;border:0;vertical-align:top">
+                        <br />&nbsp; 受文单位签章：
+                    </td>
+                    <!-- ENDIF -->
+                </tr>
+            </table>
     </tr>
 </table>
 <!-- END printList -->

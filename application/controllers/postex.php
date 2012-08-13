@@ -230,6 +230,13 @@ EOF
                     'class' => "btn4",
                 ),
                 array(
+                    'manage' => 1,
+                    'id' => "postModBtn",
+                    'jsfunc' => "postMod('{$uInfo['id']}','{$code}')",
+                    'text' => "发文修改",
+                    'class' => "btn5",
+                ),
+                array(
                     'id' => "postTitle",
                     'jsfunc' => "togglePostInfo()",
                     'text' => "{$uInfo['name']} 总发文 <span id='postSum' style='color:#EE0000;text-decoration:underline'>". $this->postInfo_sum("from", "unit", $uInfo['id']) ."</span> 件",
@@ -589,6 +596,30 @@ EOF;
         return $this->tpl->output("post_postList.html", $data, TRUE);
     }
 
+    // AJAX - 发文 - 发文修改
+    public function ajax_post_modify($unit, $code) {
+        $data = $this->unit->getById($unit);
+        $data['code'] = $code;
+        $data['vcode'] = rand(1000, 9999);
+        $data['muList'] = $this->unit->get(array('pid'=>$data['pid']));
+
+        return $this->tpl->output("postModify_form.html", $data, TRUE);
+    }
+
+    // AJAX - 发文 - 发文修改处理
+    public function ajax_post_modifyDo($sunit, $scode, $dunit, $dcode) {
+        $this->post->set(
+                array(
+                    'fuid' => $dunit,
+                    'code' => $dcode,
+                    ),
+                array(
+                    'fuid' => $sunit,
+                    'code' => $scode,
+                    )
+                );
+    }
+
     // AJAX - 发文 - 发文处理
     public function ajax_post_do($fuid, $tuid, $code, $insert) {
         // 检查线路锁定
@@ -936,6 +967,7 @@ EOF;
             'printTime' => date("Y-m-d H:i - ", time()). substr(md5(time()),0,4),
             'sPage' => count($printList),
             'manager' => $pInfo['mname'],
+            'pathId' => $pInfo['id'],
             'postDate' => $pDate ? $pDate : $date,
             'printList' => $printList,
         );
@@ -1390,13 +1422,13 @@ EOF;
             $date = date("Y-m-d", time());
         }
         $where = array('date'=>$date);
-        $order = "`code`";
+        $order = "";
         if( strcasecmp($direction, "from") == 0 ) {
             $where['fuid'] = $unit;
-            $order .= ",`tunPY`";
+            $order .= "`tuname`,`code`";
         } else {
             $where['tuid'] = $unit;
-            $order .= ",`funPY`";
+            $order .= "`funame`,`code`";
         }
         if( $code ) {
             $where['code'] = $code;

@@ -1,0 +1,66 @@
+<script type="text/javascript" language="javascript">
+var modCode;
+function showPostMod() {
+    $('#postMod').empty();
+    o = $('#postModBtn').offset();
+    $('#postMod').css({left:o.left-610,top:o.top+15});
+    $('#postMod').load("/ajax/post_modify/{{unitId}}/"+$('#postCode').text());
+    $('#postMod').fadeIn().animate({top:o.top},{queue:false});
+}
+function hidePostMod() {
+    o = $('#postModBtn').offset();
+    $('#postMod').fadeOut().animate({top:o.top+15},{queue:false});
+}
+function postMod(unit, code) {
+    if( $('#postCode').text().length == 0 ) {
+        alert("您必须填写 '文号' 才能修改发文！");
+        return;
+    }
+    if( pnPAD.style.display != "none" ) {
+        alert("您必须 >>确认<< '文号' 才能修改发文！");
+        return;
+    }
+    if( $('#codeSum').text() == "0" ) {
+        alert("此文号未发文，无法修改发文！");
+        return;
+    }
+    if( $('#postMod').css("display") == "none" ) {
+        showPostMod();
+    } else {
+        hidePostMod();
+    }
+}
+function postModUnit() {
+    if( munit.options[munit.selectedIndex].value == '{{unitId}}' ) {
+        $('#suname').text('');
+        postModSubmit.disabled = true;
+    } else {
+        $('#suname').text(munit.options[munit.selectedIndex].text);
+        if( $('#scode').text().length > 0 ) {
+            postModSubmit.disabled = false;
+        }
+    }
+}
+function postModCode() {
+    if( $('#mcode').val().length == 0 ) {
+        $('#scode').text('');
+        postModSubmit.disabled = true;
+    } else {
+        $('#scode').text($('#mcode').val()+" 号文");
+        if( $('#suname').text().length > 0 ) {
+            postModSubmit.disabled = false;
+        }
+    }
+}
+function postModDo() {
+    if( prompt("请输入 '确认码'", "") != modCode ) {
+        alert("'确认码' 错误，请核对后再提交修改！");
+        return;
+    }
+    $.get("/ajax/post_modifyDo/{{unitId}}/"+$('#postCode').text()+"/"+munit.options[munit.selectedIndex].value+"/"+$('#mcode').val(), function(r) {
+        location.href = "/post/"+munit.options[munit.selectedIndex].value+"/"+$('#mcode').val();
+    });
+}
+</script>
+
+<div id="postMod" class="postInfo" style="display:none"></div>
