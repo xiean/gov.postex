@@ -31,15 +31,7 @@ function postMod(unit, code) {
     }
 }
 function postModUnit() {
-    if( munit.options[munit.selectedIndex].value == '{{unitId}}' ) {
-        $('#suname').text('');
-        postModSubmit.disabled = true;
-    } else {
-        $('#suname').text(munit.options[munit.selectedIndex].text);
-        if( $('#scode').text().length > 0 ) {
-            postModSubmit.disabled = false;
-        }
-    }
+    $('#suname').text(munit.options[munit.selectedIndex].text);
 }
 function postModCode() {
     if( $('#mcode').val().length == 0 ) {

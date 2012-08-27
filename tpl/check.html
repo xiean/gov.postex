@@ -10,6 +10,13 @@ function scrollTo(id, ox, oy) {
     <table width="100%" cellspacing="30" cellpadding="2" border="0">
         <tr>
             <td width="50%" class="taC">
+                <table width="100%" cellspacing="0" cellpadding="5" border="0">
+                        <tr>
+                            <!-- BEGIN pathRecvList -->
+                            <td>{{name}}<br />{{recvSum}}</td>
+                            <!-- END pathRecvList -->
+                        </tr>
+                    </table>
                 <table width="100%" cellspacing="0" cellpadding="2" border="0">
                     <tr class="tabTitle">
                         <td width="38%">&nbsp; 发文汇总 - 总受文 <span style='text-decoration:underline;font-size:1.2em'>{{rightSum}}</span> 件</td>
@@ -19,6 +26,7 @@ function scrollTo(id, ox, oy) {
                     </tr>
                 </table>
                 <div id="leftPostList" class="h400x ofyS">
+
                     <table width="100%" cellspacing="0" cellpadding="5" border="0">
                         <!-- BEGIN leftPostList -->
                         <!-- IF count -->
@@ -34,8 +42,10 @@ function scrollTo(id, ox, oy) {
                         <!-- END leftPostList -->
                     </table>
                 </div>
+                <!--
                 <button type="button" class="w48p h50x fL fs14" onclick="scrollTo('leftPostList','','-=360px')">上翻</button>
                 <button type="button" class="w48p h50x fR fs14" onclick="scrollTo('leftPostList','','+=360px')">下翻</button>
+            -->
             </td>
             <td width="50%" class="taC">
                 <table width="100%" cellspacing="0" cellpadding="2" border="0">

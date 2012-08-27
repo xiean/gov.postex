@@ -48,7 +48,7 @@ function clickPAD(num) {
 }
 function loadPostInfoSide() {
     if( $('#postCode').text() ) {
-        $('#piSide').load("/ajax/post_postList/{{unitId}}/"+$('#postCode').text());
+        $('#piSide').load("/ajax/post_postList/{{unitId}}/"+$('#postCode').text()+"/"+$('#postDate').val());
     }
 }
 function post(uid) {
@@ -98,7 +98,7 @@ function post(uid) {
         alert("您必须 >>确认<< '文号' 才能选择受文单位！");
         return;
     }
-    $.get("/ajax/post_do/{{unitId}}/"+uid+"/"+$('#postCode').text()+"/"+postState, function(data) {
+    $.get("/ajax/post_do/{{unitId}}/"+uid+"/"+$('#postCode').text()+"/"+postState+"/"+$('#postDate').val(), function(data) {
         if( data.length > 0 ) {
             alert(data);
             return;
@@ -171,9 +171,9 @@ function unitPath(p) {
         $('#unitList').load("/ajax/post_unitList/{{unitId}}/-1/"+p);
     } else {
         if( $('#postCode').text().length == 0 ) {
-            $('#unitList').load("/ajax/post_unitList/{{unitId}}/0/"+p);
+            $('#unitList').load("/ajax/post_unitList/{{unitId}}/0/"+p+"/"+$('#postDate').val());
         } else {
-            $('#unitList').load("/ajax/post_unitList/{{unitId}}/"+$('#postCode').text()+"/"+p);
+            $('#unitList').load("/ajax/post_unitList/{{unitId}}/"+$('#postCode').text()+"/"+p+"/"+$('#postDate').val());
         }
     }
 }
@@ -210,12 +210,22 @@ function postChg(state) {
     }
 }
 
+function checkDate() {
+    if( $("#postDate").val() != "{{postDate}}" && $("#postDate").val() != "{{yesterday}}" ) {
+        $("#postDate").val("{{postDate}}");
+        alert("仅能指定今日或昨日为发文日期");
+        return;
+    }
+    unitPath(1);
+    loadPostInfoSide();
+}
 
 //iv = setInterval("loadPostInfoSide()", 1000);
 $(function() {
     //filterUnit('');
     unitPath(1);
     loadPostInfoSide();
+    $("#postDate").datepicker();
 });
 </script>
 
@@ -270,6 +280,8 @@ $(function() {
             </div>
             <div class="h50x">
                 <button id="gpBtn" type="button" class="h50x ml20x fs14" onclick="postGroup()" <!-- IF groupSum<"1" -->disabled<!-- ENDIF --> >&nbsp;&nbsp;受文单位群发&nbsp;&nbsp;</button>
+                &nbsp;
+                <input id="postDate" name="postDate" type="text" size="10" class="fs16" value="{{postDate}}" onchange="checkDate()" <!-- IF user!="manager" -->disabled<!-- ENDIF --> />
             </div>
             </form>
         </div>

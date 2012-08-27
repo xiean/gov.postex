@@ -13,11 +13,31 @@ function clickPAD(num) {
     }
     $('#pass').val(ci);
 }
+var cDate = new Date();
+$(function() {
+    var mon = cDate.getMonth()+1;
+    if( mon < 10 ) {
+        mon = "0"+mon;
+    }
+    var day = cDate.getDate();
+    if( day < 10 ) {
+        day = "0"+day;
+    }
+    $('#clientTime').text(cDate.getFullYear()+"-"+mon+"-"+day+" "+cDate.getHours()+":"+cDate.getMinutes());
+});
 </script>
 
 
 <div id="contentWrap">
     <div class="w290x ma mt20x">
+        <table width="100%" cellpadding="0" cellspacing="5" border="0">
+            <tr>
+                <td align="center">服务器时间：{{serverTime}}</td>
+            </tr>
+            <tr>
+                <td align="center">客户端时间：<span id="clientTime"></span></td>
+            </tr>
+        </table>
         <form id="mform" action="/noLogin" method="post" name="mform">
         <input id="pass" name="pass" type="password" class="w290x fs20" />
         </form>
@@ -45,6 +65,7 @@ function clickPAD(num) {
                 </tr>
             </table>
         </div>
+
     </div>
 </div>
 

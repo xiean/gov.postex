@@ -60,7 +60,7 @@ class postex extends CI_Controller {
     public function noLogin($logout = FALSE) {
         if( $logout ) {
             $this->session->unset_userdata('user');
-            $this->tpl->output("noLogin.html");
+            redirect("/noLogin");
             return;
         }
         if( $this->session->userdata('user') ) {
@@ -80,7 +80,7 @@ class postex extends CI_Controller {
             redirect("/");
             return;
         }
-        $this->tpl->output("noLogin.html");
+        $this->tpl->output("noLogin.html", array('serverTime'=>date("Y-m-d H:i", time())));
     }
 
     // 首页
@@ -177,7 +177,11 @@ class postex extends CI_Controller {
     }
 
     // 发文 - 填写文号及选择受文单位
-    public function post($unit, $code = FALSE) {
+    public function post($unit, $code = FALSE, $date = FALSE) {
+        if( $date === FALSE ) {
+            $date = date("Y-m-d", time());
+            $ytday = date("Y-m-d", time()-86400);
+        }
         $uInfo = $this->unit->getById($unit);
         if( 0 == count($uInfo) ) {
             return redirect('/postPath');
@@ -186,6 +190,8 @@ class postex extends CI_Controller {
 
         $data = array(
             'user' => $this->session->userdata('user'),
+            'postDate' => $date,
+            'yesterday' => $ytday,
             'title' => "发文",
             'pathId' => $pInfo['id'],
             'unitId' => $uInfo['id'],
@@ -288,28 +294,39 @@ EOF
                 ),
             ),
             'localList' => $this->path->get(array('local'=>'1'), "seq", 10),
-            //'regionList' => $this->path->get(array('local'=>'0'), "seq DESC", 20),
+            'regionList' => $this->unit->get(array('lock'=>'1'), "seq", 20),
         );
         foreach($data['localList'] as $k => $v) {
             $data['localList'][$k]['name'] = $this->autoSize($v['name']);
         }
-        //foreach($data['regionList'] as $k => $v) {
-        //    $data['regionList'][$k]['name'] = $this->autoSize($v['name']);
-        //}
+        foreach($data['regionList'] as $k => $v) {
+            $data['regionList'][$k]['name'] = $this->autoSize($v['name']);
+        }
 
         $this->tpl->output("selectPath.html", $data);
     }
 
     // 核查 - 确认
-    public function check($path) {
-        $pInfo = $this->path->getById($path);
-        if( 0 == count($pInfo) ) {
-            return redirect('/postPath');
+    public function check($path, $unit = FALSE) {
+        if( $path > 0 ) {
+            $pInfo = $this->path->getById($path);
+            if( 0 == count($pInfo) ) {
+                return redirect('/check');
+            }
+        } else if( $unit > 0) {
+            $uInfo = $this->unit->getById($unit);
+        } else {
+            return redirect('/check');
         }
+
 
         // 今日收文列表
         //$result = $this->postInfo_path("from", $path);
-        $result = $this->postInfo_path("to", $path, FALSE, 1);
+        if( $path > 0 ) {
+            $result = $this->postInfo_path("to", $path, FALSE, 1);
+        } else {
+            $result = $this->postInfo_unit("to", $unit, FALSE);
+        }
         $left = array();
         $t = array();
         foreach($result as $v) {
@@ -348,7 +365,11 @@ EOF
         }
 
         // 今日受文列表
-        $result = $this->postInfo_path("to", $path);
+        if( $path > 0 ) {
+            $result = $this->postInfo_path("to", $path);
+        } else {
+            $result = $this->postInfo_unit("to", $unit);
+        }
         $right = array();
         $t = array();
         foreach($result as $v) {
@@ -388,6 +409,24 @@ EOF
 
         $pathLock = $this->pathState($pInfo['id']);
 
+        $psList = $this->path->get(array('local'=>1));
+        foreach($psList as $k => $v) {
+            if( $path > 0 ) {
+                $result = $this->postInfo->select("SUM(`sum`) AS `sum`", array('date'=>date("Y-m-d",time()),'fpid'=>$v['id'],'tpid'=>$path));
+            } else {
+                $result = $this->postInfo->select("SUM(`sum`) AS `sum`", array('date'=>date("Y-m-d",time()),'fpid'=>$v['id'],'tuid'=>$unit));
+            }
+            $psList[$k]['recvSum'] = $result[0]['sum'] ? $result[0]['sum'] : 0;
+        }
+
+        if( $path > 0 ) {
+            $leftSum = $this->postInfo_sum("from", "path", $pInfo['id']);
+            $rightSum = $this->postInfo_sum("to", "path", $pInfo['id']);
+        } else {
+            $leftSum = $this->postInfo_sum("from", "unit", $unit);
+            $rightSum = $this->postInfo_sum("to", "unit", $unit);
+        }
+
         $data = array(
             'title' => "{$pInfo['name']}核查",
             'pathId' => $pInfo['id'],
@@ -400,7 +439,7 @@ EOF
                 ),
                 array(
                     'uri' => "/checkPath",
-                    'text' => "{$pInfo['name']}核查",
+                    'text' => $path > 0 ? "{$pInfo['name']}核查" : "{$uInfo['name']}核查",
                     'class' => "btn4",
                 ),
                 array(
@@ -410,21 +449,22 @@ EOF
                 ),
             ),
             'navRight' => array(
-                array(
-                    'uri' => "/pathLock/{$pInfo['id']}/". ($pathLock > 0 ? 0 : 1),
-                    'text' => $pathLock > 0 ? "{$pInfo['name']} 已锁定，点此解锁" : "{$pInfo['name']} 核查完成，点此锁定",
-                    'class' => $pathLock > 0 ? "btn6" : "btn5",
-                ),
+                //array(
+                //    'uri' => "/pathLock/{$pInfo['id']}/". ($pathLock > 0 ? 0 : 1),
+                //    'text' => $pathLock > 0 ? "{$pInfo['name']} 已锁定，点此解锁" : "{$pInfo['name']} 核查完成，点此锁定",
+                //    'class' => $pathLock > 0 ? "btn6" : "btn5",
+                //),
                 array(
                     'uri' => "/",
                     'text' => "&nbsp;返 回&nbsp;",
                     'class' => "btn2",
                 ),
             ),
-            'leftSum' => $this->postInfo_sum("from", "path", $pInfo['id']),
-            'rightSum' => $this->postInfo_sum("to", "path", $pInfo['id']),
+            'leftSum' => $leftSum,
+            'rightSum' => $rightSum,
             'leftPostList' => $left,
             'rightPostList' => $right,
+            'pathRecvList' => $psList,
         );
         $this->tpl->output("check.html", $data);
     }
@@ -514,23 +554,26 @@ EOF
     }
 
     // AJAX - 发文 - 待受文单位列表
-    public function ajax_post_unitList($unit, $code = FALSE, $path = 1, $filter = FALSE) {
-        $where = "";
-        if( $filter ) {
-            $where = "AND (`name` LIKE '%{$filter}%' OR `namePY` LIKE '%{$filter}%')";
+    public function ajax_post_unitList($unit, $code = FALSE, $path = 1, $date = FALSE) {
+        if( $date === FALSE ) {
+            $date = date("Y-m-d", time());
         }
+        //$where = "";
+        //if( $filter ) {
+        //    $where = "AND (`name` LIKE '%{$filter}%' OR `namePY` LIKE '%{$filter}%')";
+        //}
 
         $qStr = <<<EOF
 SELECT
     *
 FROM `unit`
-WHERE `pid`='$path' AND `tohide`!=1 $where
+WHERE `pid`='$path' AND `tohide`!=1
 ORDER BY `seq`
 EOF;
         $data = array('unitList' => $this->db->query($qStr)->result_array());
 
         if( $code != -1 ) {
-            $data['postList'] = $this->postInfo_unit("from", $unit, $code);
+            $data['postList'] = $this->postInfo_unit("from", $unit, $code, $date);
             $pathList = $this->path->get(array('local'=>1));
             $pSumList = array();
             foreach($pathList as $k => $v) {
@@ -574,11 +617,15 @@ EOF;
     }
 
     // AJAX - 发文 - 已受文列表
-    public function ajax_post_postList($unit, $code) {
+    public function ajax_post_postList($unit, $code, $date = FALSE) {
+        if( $date === FALSE ) {
+            $date = date("Y-m-d", time());
+        }
+
         $data = array(
             'code' => $code,
             'codeSum' => 0,
-            'postList' => $this->postInfo_unit("from", $unit, $code),
+            'postList' => $this->postInfo_unit("from", $unit, $code, $date),
             );
         $pathList = $this->path->get();
         $pSumList = array();
@@ -621,7 +668,11 @@ EOF;
     }
 
     // AJAX - 发文 - 发文处理
-    public function ajax_post_do($fuid, $tuid, $code, $insert) {
+    public function ajax_post_do($fuid, $tuid, $code, $insert, $date = FALSE) {
+        if( $date === FALSE ) {
+            $date = date("Y-m-d", time());
+        }
+
         // 检查线路锁定
         $funit = $this->unit->getById($fuid);
         $tunit = $this->unit->getById($tuid);
@@ -635,7 +686,7 @@ EOF;
         }
 
         $data = array(
-                'date' => date("Y-m-d", time()),
+                'date' => $date,
                 'fuid' => $fuid,
                 'tuid' => $tuid,
                 'code' => $code
