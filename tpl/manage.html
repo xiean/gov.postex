@@ -112,24 +112,14 @@ function userPassSubmit() {
         document.mform.pass.focus();
         return;
     }
-    if(document.mform.nmpass.value != document.mform.rmpass.value) {
-        alert('新管理员密码两次输入不符');
-        document.mform.nmpass.focus();
+    if(document.mform.npass.value != document.mform.rpass.value) {
+        alert('密码两次输入不符');
+        document.mform.npass.focus();
         return;
     }
-    if(document.mform.nppass.value != document.mform.rppass.value) {
-        alert('新通信员密码两次输入不符');
-        document.mform.nppass.focus();
-        return;
-    }
-    if(document.mform.nmpass.value.length > 0 && isNaN(document.mform.nmpass.value)) {
+    if(document.mform.npass.value.length > 0 && isNaN(document.mform.npass.value)) {
         alert('新管理员密码必须为数字');
-        document.mform.nmpass.focus();
-        return;
-    }
-    if(document.mform.nppass.value.length > 0 && isNaN(document.mform.nppass.value)) {
-        alert('新通信员密码必须为数字');
-        document.mform.nppass.focus();
+        document.mform.npass.focus();
         return;
     }
     $.post("/ajax/manage_userPass_do/", $('#mform').serialize(), function(r) {
@@ -137,8 +127,9 @@ function userPassSubmit() {
             alert(r);
             return;
         }
-        alert('密码修改成功，请重新登入');
-        location.href='/noLogin/1';
+        alert('密码修改成功');
+        manageLoad('userPass');
+        //location.href='/noLogin/1';
     });
 }
 

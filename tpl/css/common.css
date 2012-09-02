@@ -420,6 +420,7 @@ button {
 .h400x  {height:400px}
 
 /* 边框 */
+.b0     {border:0}
 .b1S    {border:1px solid}
 .b2S    {border:2px solid}
 .br1S   {border-right:1px #dd8866 solid}

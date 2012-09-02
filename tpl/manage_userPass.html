@@ -1,7 +1,25 @@
+<script type="text/javascript" language="javascript">
+function setUser(uid,name) {
+    $('#uname').text(name);
+    $('#account').val(uid);
+}
+</script>
+
 <div>
     <form id="mform" name="mform" method="post" action="/manage_userPass">
+        <table width="100%" cellpadding="0" cellspacing="5" border="0" class="mt20x">
+            <tr>
+                <!-- BEGIN userList -->
+                <td align="center">
+                    <button type="button" class="fs16 h50x" onclick="setUser('{{account}}','{{name}}')">
+                        &nbsp;{{name}}&nbsp;
+                    </button>
+                </td>
+                <!-- END userList -->
+            </tr>
+        </table>
         <table width="100%" cellspacing="2" cellpadding="2" border="0">
-            <tr><td></td><td>如不需修改，请留空对应输入框</td></tr>
+            <tr><td></td><td class="fs20">修改 <span id="uname">{{uname}}</span> 密码<input id="account" name="account" type="hidden" value="{{account}}" /></td></tr>
             <tr><td height="20" colspan="2">&nbsp;</td></tr>
             <tr>
                 <td width="30%" align="right">管理员密码</td>
@@ -9,21 +27,12 @@
             </tr>
             <tr><td height="20" colspan="2">&nbsp;</td></tr>
             <tr>
-                <td align="right">管理员新密码</td>
-                <td><input name="nmpass" type="password" class="fs12" /></td>
+                <td align="right">新密码</td>
+                <td><input name="npass" type="password" class="fs12" /></td>
             </tr>
             <tr>
-                <td align="right">重输管理员新密码</td>
-                <td><input name="rmpass" type="password" class="fs12" /></td>
-            </tr>
-            <tr><td height="20" colspan="2">&nbsp;</td></tr>
-            <tr>
-                <td align="right">通信员新密码</td>
-                <td><input name="nppass" type="password" class="fs12" /></td>
-            </tr>
-            <tr>
-                <td align="right">重输通信员新密码</td>
-                <td><input name="rppass" type="password" class="fs12" /></td>
+                <td align="right">重输新密码</td>
+                <td><input name="rpass" type="password" class="fs12" /></td>
             </tr>
             <tr><td height="20" colspan="2">&nbsp;</td></tr>
             <tr>

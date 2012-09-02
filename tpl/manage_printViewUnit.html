@@ -15,38 +15,40 @@
 <!-- ENDIF -->
 <table width="370" cellspacing="0" cellpadding="0">
     <tr>
-        <td colspan="3" style="height:45px;font-size:2em;border:0;text-align:center;vertical-align:bottom">
+        <td colspan="4" style="height:45px;font-size:2em;border:0;text-align:center;vertical-align:bottom">
             公文交换清单
         </td>
     </tr>
     <tr>
-        <td style="border:0">打印时间：{{parent.printTime}}</td>
+        <td colspan="2" style="border:0">打印时间：{{parent.printTime}}</td>
         <td colspan="2" style="border:0;text-align:right">页数：{{cPage}}/{{parent.sPage}}</td>
     </tr>
     <tr>
-        <td style="border-bottom:0;border-right:0;" width="64%" height="24">&nbsp;受文单位：{{tuname}}</td>
-        <td style="border-bottom:0;border-left:0;border-right:0;" width="18%" align="right">通信员：</td>
-        <td style="border-bottom:0;border-left:0;" width="18%">{{parent.manager}}&nbsp;</td>
+        <td colspan="2" style="border-bottom:0;border-right:0;" height="24">&nbsp;受文单位：{{tuname}}</td>
+        <td style="border-bottom:0;border-left:0;border-right:0;" align="right">通信员：</td>
+        <td style="border-bottom:0;border-left:0;">{{parent.manager}}&nbsp;</td>
     </tr>
     <tr>
-        <td style="border-top:0;border-right:0;" height="20">&nbsp;送达日期：{{parent.postDate}}</td>
+        <td colspan="2" style="border-top:0;border-right:0;" height="20">&nbsp;送达日期：{{parent.postDate}}</td>
         <td style="border-top:0;border-left:0;border-right:0;" align="right">总受件：</td>
         <td style="border-top:0;border-left:0;"><!-- IF cpSum>"0" -->{{cpSum}}/<!-- ENDIF -->{{postSum}}</td>
     </tr>
     <tr>
-        <td style="border-top:0;vertical-align:bottom" height="20">&nbsp;发文单位</td>
-        <td style="border-top:0;border-left:0;vertical-align:bottom" align="center">文号</td>
-        <td style="border-top:0;border-left:0;vertical-align:bottom" align="center">件数</td>
+        <td width="44%" style="border-top:0;vertical-align:bottom" height="20">&nbsp;发文单位</td>
+        <td width="18%" style="border-top:0;border-left:0;vertical-align:bottom" align="center">文号</td>
+        <td width="18%" style="border-top:0;border-left:0;vertical-align:bottom" align="center">件数</td>
+        <td width="20%" style="border-top:0;border-left:0;vertical-align:bottom" align="center">备注</td>
     </tr>
     <!-- BEGIN postList -->
     <tr>
-        <td style="border-top:0;border-right:0;border-bottom:0;vertical-align:bottom" height="20">&nbsp;{{funame}}</td>
-        <td style="border:0" align="center">{{code}}</td>
-        <td style="border-top:0;border-left:0;border-bottom:0;" align="center">{{sum}}</td>
+        <td style="border-top:0;vertical-align:bottom" height="20">&nbsp;{{funame}}</td>
+        <td style="border-top:0;border-left:0;" align="center">{{code}}</td>
+        <td style="border-top:0;border-left:0;" align="center">{{sum}}</td>
+        <td style="border-top:0;border-left:0;" align="center">&nbsp;</td>
     </tr>
     <!-- END postList -->
     <tr>
-        <td colspan="3" style="height:125px;vertical-align:top">
+        <td colspan="4" style="border-top:0;height:125px;vertical-align:top">
             <table width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                     <!-- IF parent.pathId="6" -->

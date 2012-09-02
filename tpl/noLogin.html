@@ -6,6 +6,10 @@ function clickPAD(num) {
     if(num == 10) {
         ci = "";
     } else if(num == 11) {
+        if( $('#account').val().length < 1 ) {
+            alert("必须选择用户才能登入！");
+            return;
+        }
         $('#mform').submit();
         return;
     } else {
@@ -25,11 +29,27 @@ $(function() {
     }
     $('#clientTime').text(cDate.getFullYear()+"-"+mon+"-"+day+" "+cDate.getHours()+":"+cDate.getMinutes());
 });
+function setUser(uid,name) {
+    $('#user').text(name);
+    $('#account').val(uid);
+}
 </script>
 
 
 <div id="contentWrap">
+    <table width="100%" cellpadding="0" cellspacing="5" border="0" class="mt20x">
+        <tr>
+            <!-- BEGIN userList -->
+            <td align="center">
+                <button type="button" class="fs16 h50x" onclick="setUser('{{account}}','{{name}}')">
+                    &nbsp;{{name}}&nbsp;
+                </button>
+            </td>
+            <!-- END userList -->
+        </tr>
+    </table>
     <div class="w290x ma mt20x">
+        <!--
         <table width="100%" cellpadding="0" cellspacing="5" border="0">
             <tr>
                 <td align="center">服务器时间：{{serverTime}}</td>
@@ -38,8 +58,14 @@ $(function() {
                 <td align="center">客户端时间：<span id="clientTime"></span></td>
             </tr>
         </table>
+-->
         <form id="mform" action="/noLogin" method="post" name="mform">
-        <input id="pass" name="pass" type="password" class="w290x fs20" />
+        <div style="width:295px;">
+            <span id="user" class="fs20">选择用户</span>
+            <input id="pass" name="pass" type="password" class="fs12 b0" style="width:100px" />
+            <input id="account" name="account" type="hidden" />
+        </div>
+
         </form>
         <div class="inputPAD">
             <table width="100%" cellpadding="0" cellspacing="5" border="0">

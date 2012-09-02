@@ -42,7 +42,7 @@
                 </li>
                 <!-- ENDIF -->
             <!-- ELSE -->
-            <li <!-- IF id -->id="{{id}}"<!-- ENDIF --> onclick="<!-- IF jsfunc -->{{jsfunc}}<!-- ELSE -->location.href='{{uri}}'<!-- ENDIF -->" <!-- IF class -->class="{{class}}"<!-- ENDIF --> >
+            <li <!-- IF id -->id="{{id}}"<!-- ENDIF --> onclick="<!-- IF jsfunc -->{{jsfunc}}<!-- ELSE -->location.href='{{uri}}'<!-- ENDIF -->" <!-- IF class -->class="{{class}}"<!-- ENDIF --> <!-- IF disabled -->disabled<!-- ENDIF --> >
                 {{text}}
             </li>
             <!-- ENDIF -->

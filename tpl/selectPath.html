@@ -5,7 +5,7 @@
         <ol>
             <!-- BEGIN localList -->
             <li>
-                <button type="button" onclick="location.href='/{{parent.action}}/{{id}}'">{{name}}<br /><span class="fs08">({{alias}})</span></button>
+                <button type="button" onclick="location.href='/{{parent.action}}/{{id}}'" <!-- IF disabled -->disabled<!-- ENDIF --> >{{name}}<br /><span class="fs08">({{alias}})</span></button>
             </li>
             <!-- END localList -->
         </ol>
@@ -13,7 +13,7 @@
         <ol>
             <!-- BEGIN regionList -->
             <li>
-                <button type="button" onclick="location.href='/{{parent.action}}/<!-- IF lock -->0/<!-- ENDIF -->{{id}}'">{{name}}</button>
+                <button type="button" onclick="location.href='/{{parent.action}}/<!-- IF lock -->0/<!-- ENDIF -->{{id}}'" <!-- IF disabled -->disabled<!-- ENDIF --> >{{name}}</button>
             </li>
             <!-- END regionList -->
         </ol>

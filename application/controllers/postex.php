@@ -69,18 +69,18 @@ class postex extends CI_Controller {
         }
         if( ($pw = $this->input->post('pass')) ) {
             // 登入处理
-            $manager = $this->user->getById('manager');
-            $poster = $this->user->getById('poster');
+            $account = $this->user->getById($this->input->post('account'));
             $login = md5($pw);
-            if( $login == $manager['password'] ) {
-                $this->session->set_userdata('user', "manager");
-            } else if( $login == $poster['password'] ) {
-                $this->session->set_userdata('user', "poster");
+            if( $login == $account['password'] ) {
+                $this->session->set_userdata('user', $account['account']);
             }
             redirect("/");
             return;
         }
-        $this->tpl->output("noLogin.html", array('serverTime'=>date("Y-m-d H:i", time())));
+        $this->tpl->output("noLogin.html", array(
+            'serverTime' => date("Y-m-d H:i", time()),
+            'userList' => $this->user->get(),
+            ));
     }
 
     // 首页
@@ -123,19 +123,33 @@ class postex extends CI_Controller {
         );
         foreach($data['localList'] as $k => $v) {
             $data['localList'][$k]['name'] = $this->autoSize($v['name']);
+            if( $this->session->userdata('user') != "manager" && $this->session->userdata('user') != "path{$v['id']}" ) {
+                $data['localList'][$k]['disabled'] = 1;
+            }
         }
         foreach($data['regionList'] as $k => $v) {
             $data['regionList'][$k]['name'] = $this->autoSize($v['name']);
+            if( $this->session->userdata('user') != "manager" && $this->session->userdata('user') != "path6" ) {
+                $data['regionList'][$k]['disabled'] = 1;
+            }
         }
 
         $this->tpl->output("selectPath.html", $data);
     }
 
     // 发文 - 选择发文单位
-    public function postUnit($path) {
+    public function postUnit($path, $filter = FALSE) {
         $pInfo = $this->path->getById($path);
         if( 0 == count($pInfo) ) {
             return redirect('/postPath');
+        }
+        if( $pInfo['local'] == 0 ) {
+            return redirect("/postUnit/6/{$pInfo['name']}");
+        }
+        if( $filter ) {
+            $this->session->set_userdata('puf', $filter);
+        } else {
+            $this->session->unset_userdata('puf');
         }
         $data = array(
             'title' => "{$pInfo['name']}发文",
@@ -449,11 +463,6 @@ EOF
                 ),
             ),
             'navRight' => array(
-                //array(
-                //    'uri' => "/pathLock/{$pInfo['id']}/". ($pathLock > 0 ? 0 : 1),
-                //    'text' => $pathLock > 0 ? "{$pInfo['name']} 已锁定，点此解锁" : "{$pInfo['name']} 核查完成，点此锁定",
-                //    'class' => $pathLock > 0 ? "btn6" : "btn5",
-                //),
                 array(
                     'uri' => "/",
                     'text' => "&nbsp;返 回&nbsp;",
@@ -466,6 +475,16 @@ EOF
             'rightPostList' => $right,
             'pathRecvList' => $psList,
         );
+        if( $this->session->userdata('user') == "path{$path}" ) {
+            $data['navRight'] = array_merge(
+                    array(array(
+                        'uri' => "/pathLock/{$pInfo['id']}/". ($pathLock > 0 ? 0 : 1),
+                        'text' => $pathLock > 0 ? "{$pInfo['name']} 已锁定，点此解锁" : "{$pInfo['name']} 核查完成，点此锁定",
+                        'class' => $pathLock > 0 ? "btn6" : "btn5",
+                    )),
+                    $data['navRight']
+                    );
+        }
         $this->tpl->output("check.html", $data);
     }
 
@@ -541,11 +560,18 @@ EOF
     // AJAX - 发文 - 线路单位列表
     public function ajax_postUnit_unitList($path, $filter = FALSE) {
         $where = "pid = '{$path}' AND `tohide` != 2";
+        if( $this->session->userdata('puf') ) {
+            $filter = $this->session->userdata('puf');
+        }
         if( $filter ) {
-            $where .= "AND (`name` LIKE '%{$filter}%' OR `namePY` LIKE '%{$filter}%')";
+            $where .= " AND (`name` LIKE '%{$filter}%' OR `namePY` LIKE '%{$filter}%')";
         }
 
-        $data = array('unitList' => $this->unit->get($where, "seq"));
+        if( $path == 6 ) {
+            $data = array('unitList' => $this->unit->get($where, "`name`, seq"));
+        } else {
+            $data = array('unitList' => $this->unit->get($where, "seq"));
+        }
         foreach($data['unitList'] as $k => $v) {
             $data['unitList'][$k]['name'] = $this->autoSize($v['name']);
         }
@@ -1331,27 +1357,24 @@ EOF;
 
     // AJAX - 管理 - 登录密码修改
     public function ajax_manage_userPass() {
-        return $this->tpl->output("manage_userPass.html", FALSE, TRUE);
+        $user = $this->user->get(array('account'=>$this->session->userdata('user')));
+        return $this->tpl->output("manage_userPass.html", array(
+            'uname' => $user[0]['name'],
+            'account' => $user[0]['account'],
+            'userList' => $this->user->get(),
+            ), TRUE);
     }
 
     // AJAX - 管理 - 登录密码修改
     public function ajax_manage_userPass_do() {
         $manager = $this->user->getById('manager');
         if( $manager['password'] != md5($this->input->post('pass')) ) {
-            return "管理员旧密码不符，密码修改失败";
+            return "管理员密码不符，密码修改失败";
         }
-        if( $this->input->post('nmpass') ) {
-            $this->user->set(
-                    array('password'=>md5($this->input->post('nmpass'))),
-                    array('account'=>'manager')
-                    );
-        }
-        if( $this->input->post('nppass') ) {
-            $this->user->set(
-                    array('password'=>md5($this->input->post('nppass'))),
-                    array('account'=>'poster')
-                    );
-        }
+        $this->user->set(
+                array('password'=>md5($this->input->post('npass'))),
+                array('account'=>$this->input->post('account'))
+                );
     }
 
     // AJAX - 管理 - 查询请求处理
